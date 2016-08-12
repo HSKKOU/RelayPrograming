@@ -1,0 +1,92 @@
+<?php
+namespace Application\Controller;
+
+use Zend\Mvc\Controller\AbstractActionController;
+use Zend\View\Model\ViewModel;
+
+class IndexController extends AbstractActionController
+{
+  public function indexAction()
+  {
+    $view = new ViewModel();
+
+    // create views
+    $codeview = $this->createCodeView();
+    $chatview = $this->createChatView();
+    $membersview = $this->createMembersView();
+    $loginlb = $this->createLoginLB();
+    $userinput = $this->createUserInput();
+
+    // set view parts
+    $view->addChild($codeview, 'codeview')
+         ->addChild($chatview, 'chatview')
+         ->addChild($membersview, 'membersview')
+         ->addChild($loginlb, 'loginlb')
+         ->addChild($userinput, 'userinput');
+
+    return $view;
+  }
+
+  public function watchAction()
+  {
+    $view = new ViewModel();
+
+    // create views
+    $codeview = $this->createCodeView();
+    $chatview = $this->createChatView();
+    $membersview = $this->createMembersView();
+
+    // set view parts
+    $view->addChild($codeview, 'codeview')
+         ->addChild($chatview, 'chatview')
+         ->addChild($membersview, 'membersview');
+
+    return $view;
+  }
+
+  public function adminAction()
+  {
+    $view = new ViewModel();
+
+    // create views
+    $codeview = $this->createCodeView();
+    $chatview = $this->createChatView();
+    $membersview = $this->createMembersView();
+    $userinput = $this->createUserInput();
+
+    // set view parts
+    $view->addChild($codeview, 'codeview')
+         ->addChild($chatview, 'chatview')
+         ->addChild($membersview, 'membersview')
+         ->addChild($userinput, 'userinput');
+
+    return $view;
+  }
+
+  private function createViewWithParts($_partsAliases)
+  {
+    $view = new ViewModel();
+
+    for ($_partsAliases as $p)
+    {
+      $pView = $this->createViewModel($p);
+      $view->addChild($pView);
+    }
+
+    return $view;
+  }
+
+  private function createCodeView() { return $this->createViewModel('parts/chat_view'); }
+  private function createChatView() { return $this->createViewModel('parts/code_view'); }
+  private function createMembersView() { return $this->createViewModel('parts/members_view'); }
+  private function createLoginLB(){ return $this->createViewModel('parts/login_lightbox'); }
+  private function createUserInput() { return $this->createViewModel('parts/user_input'); }
+
+  private function createViewModel($_alias)
+  {
+    $view = new ViewModel();
+    $view->setTemplate($_alias);
+
+    return $view;
+  }
+}
