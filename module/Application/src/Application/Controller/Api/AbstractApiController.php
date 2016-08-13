@@ -1,5 +1,5 @@
 <?php
-namespace Application\Controller;
+namespace Application\Controller\Api;
 
 use Zend\Mvc\Controller\AbstractRestfulController;
 use Zend\View\Model\JsonModel;

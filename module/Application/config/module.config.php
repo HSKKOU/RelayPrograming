@@ -80,6 +80,8 @@ return array(
             'Application\Controller\Index' => Controller\IndexController::class,
             'Application\Controller\Watch' => Controller\WatchController::class,
             'Application\Controller\Admin' => Controller\AdminController::class,
+
+            'Application\Controller\User' => Controller\Api\UserRestfulController::class,
         ),
     ),
     'view_manager' => array(
