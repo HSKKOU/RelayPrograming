@@ -35,7 +35,7 @@ return array(
         'options' => array(
           'route'    => '/api',
           'defaults' => array(
-            '__NAMESPACE__' => 'Application\Controller',
+            '__NAMESPACE__' => 'Application\Controller\Api',
           ),
         ),
         'may_terminate' => true,
@@ -81,7 +81,7 @@ return array(
       'Application\Controller\Watch' => Controller\WatchController::class,
       'Application\Controller\Admin' => Controller\AdminController::class,
 
-      'Application\Controller\User' => Controller\Api\UserRestfulController::class,
+      'Application\Controller\Api\User' => Controller\Api\UserRestfulController::class,
     ),
   ),
   'view_manager' => array(
