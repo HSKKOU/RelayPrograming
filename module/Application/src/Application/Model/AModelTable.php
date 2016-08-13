@@ -48,12 +48,12 @@ class AModelTable
     $data = $_model->exchangeToArrayWithoutId();
 
     if ($id == 0) {
-      return $this->tableGateway->insert($data);
+      $this->tableGateway->insert($data);
     } else {
       if ($this->get($id)) {
         $this->tableGateway->update($data, array('id' => $id));
       } else {
-        return new \Exception("This Model's id dose not exist");
+        throw new \Exception("This Model's id dose not exist");
       }
     }
   }

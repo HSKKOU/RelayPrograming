@@ -40,13 +40,12 @@ class UserRestfulController extends AbstractApiController
     $newModel = new UserModel();
     $newModel->exchangeArray($data);
     $result = $this->getUserTable()->saveUser($newModel);
-    $savedData = array();
     if ($result == 1) {
-      $fetchList = $this->getListRaw();
-      $savedData = $fetchList[count($fetchList)-1];
+      $savedData = $this->getUserTable()->getLastUser();
+      return $this->makeSuccessJson($savedData);
     }
 
-    return $this->makeSuccessJson($savedData);
+    return $this->makeFailedJson(array());
   }
 
 

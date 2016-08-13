@@ -22,7 +22,13 @@ class UserModelTable extends AModelTable
 
   public function saveUser(UserModel $userModel)
   {
-    $this->saveModel($userModel);
+    try{
+      $this->saveModel($userModel);
+    } catch(Exception $e) {
+      return 0;
+    }
+
+    return 1;
   }
 
   public function deleteUser($id)
