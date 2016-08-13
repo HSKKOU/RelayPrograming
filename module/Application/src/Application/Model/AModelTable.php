@@ -44,7 +44,7 @@ class AModelTable
 
   public function saveModel(AModel $_model)
   {
-    $id = (int)$_mode->id;
+    $id = (int)$_model->id;
     $data = $_model->exchangeToArrayWithoutId();
 
     if ($id == 0) {

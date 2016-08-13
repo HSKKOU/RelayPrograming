@@ -12,5 +12,6 @@ abstract class AModel
   {
     $arr = $this->exchangeToArray();
     unset($arr['id']);
+    return $arr;
   }
 }
