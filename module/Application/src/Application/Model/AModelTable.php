@@ -42,14 +42,16 @@ class AModelTable
     return $row;
   }
 
-  public function saveModel($_id, $_data)
+  public function saveModel(AModel $_model)
   {
-    $id = (int)$_id;
+    $id = (int)$_mode->id;
+    $data = $_model->exchangeToArrayWithoutId();
+
     if ($id == 0) {
-      return $this->tableGateway->insert($_data);
+      return $this->tableGateway->insert($data);
     } else {
       if ($this->get($id)) {
-        $this->tableGateway->update($_data, array('id' => $id));
+        $this->tableGateway->update($data, array('id' => $id));
       } else {
         return new \Exception("This Model's id dose not exist");
       }

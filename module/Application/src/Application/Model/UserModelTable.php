@@ -22,8 +22,7 @@ class UserModelTable extends AModelTable
 
   public function saveUser(UserModel $userModel)
   {
-    $data = $this->exchangeToArrayWithoutId();
-    $this->saveModel($userModel->id, $data);
+    $this->saveModel($userModel);
   }
 
   public function deleteUser($id)
