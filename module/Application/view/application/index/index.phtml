@@ -17,3 +17,29 @@
 
 <!-- Login lightbox -->
 <?= $this->loginlb ?>
+
+
+
+
+
+<?php
+$this->inlineScript()->appendScript(
+<<<__END__
+
+var \$loginForm = \$("#login_form");
+\$loginForm.on("submit", function(_e){
+  _e.preventDefault();
+  var name = \$loginForm.find('.input_name > input').val(),
+      color = \$loginForm.find('.input_color > input').val();
+  log("user inputs", name, color);
+
+  var postData = { "name": name, "color": color };
+  post({"url": "http://localhost/api/user/", "type": "post", "query": postData, "callback":
+    function(_result, _data){
+      log("result", _result, _data);
+    }
+  });
+});
+
+__END__
+);
