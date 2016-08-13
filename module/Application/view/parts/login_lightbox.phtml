@@ -5,15 +5,17 @@
       <div class="header">
         <div class="title">入室</div>
       </div>
-      <div class="body">
+      <form id="login_form" class="body">
         <div class="title">name:</div>
         <div class="input_name">
-          <input type="text" maxlength="10" class="br" />
+          <input type="text" maxlength="10" name="name" class="br" />
         </div>
         <div class="input_color">
-          <input type="color" value="#ffffff" />
+          <input type="color" value="#ffffff" name="color" />
         </div>
-        <div id="join" class="button br">JOIN</div>
+        <div class="join_button">
+          <input id="join" class="button br" type="submit" value="JOIN" />
+        </div>
       </div>
     </div>
   </div>
