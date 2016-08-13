@@ -28,9 +28,25 @@ $api_user = $this->url('api/default', array('controller' => 'user'));
 $this->inlineScript()->appendScript(
 <<<__END__
 
-var \$loginForm = \$("#login_form");
-\$loginForm.on("submit", function(_e){
-  _e.preventDefault();
+var \$loginDOM = \$("#login"),
+    \$loginForm = \$("#login_form"),
+    userId = -1;
+(function main(){
+  setLoginEvent();
+})();
+
+
+
+/* login */
+function setLoginEvent(){
+  \$loginForm.on("submit", function(_e){
+    _e.preventDefault();
+    login();
+    return false;
+  });
+}
+
+function login(){
   var name = \$loginForm.find('.input_name > input').val(),
       color = \$loginForm.find('.input_color > input').val();
   log("user inputs", name, color);
@@ -39,15 +55,40 @@ var \$loginForm = \$("#login_form");
   post({"url": "$api_user", "type": "post", "query": postData,
     "success": function(_data){
       log("data", _data);
-      
+      succeedLogin(_data['data']);
     },
     "fail": function(_data){
       log("data", _data);
-      alert("Failed to create or login.");
+      failedLogin();
     },
     "complete": function(_data){ /* nothing to do. */ }
   });
-});
+}
+
+function succeedLogin(_user){
+  \$loginForm.off();
+  \$loginDOM.remove();
+
+  /* set User Info */
+  log("user", _user);
+  userId = +_user['id'];
+  /* end set User Info */
+
+  setMainEvents();
+}
+
+function failedLogin(){
+  alert("Failed to create or login.");
+}
+/* end login */
+
+
+
+/* main routine */
+function setMainEvents(){
+  log("set Main Events", userId);
+}
+/* end main routine */
 
 __END__
 );
