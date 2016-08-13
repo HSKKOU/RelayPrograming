@@ -7,7 +7,6 @@ use Zend\View\Model\JsonModel;
 
 class AbstractRPController extends AbstractRestfulController
 {
-
   // create view model from aliases
   protected function createViewWithParts($_partsAliases)
   {

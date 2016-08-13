@@ -23,6 +23,8 @@
 
 
 <?php
+$api_user = $this->url('api/default', array('controller' => 'user'));
+
 $this->inlineScript()->appendScript(
 <<<__END__
 
@@ -34,10 +36,16 @@ var \$loginForm = \$("#login_form");
   log("user inputs", name, color);
 
   var postData = { "name": name, "color": color };
-  post({"url": "http://localhost/api/user/", "type": "post", "query": postData, "callback":
-    function(_result, _data){
-      log("result", _result, _data);
-    }
+  post({"url": "$api_user", "type": "post", "query": postData,
+    "success": function(_data){
+      log("data", _data);
+      
+    },
+    "fail": function(_data){
+      log("data", _data);
+      alert("Failed to create or login.");
+    },
+    "complete": function(_data){ /* nothing to do. */ }
   });
 });
 
