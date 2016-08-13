@@ -26,8 +26,6 @@ class IndexController extends AbstractRPController
 
   public function indexAction()
   {
-    $room_id = intval($this->params("room_id"));
-
     $viewAliases = array(
       'code_view',
       'chat_view',

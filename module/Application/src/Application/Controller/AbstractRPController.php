@@ -10,7 +10,9 @@ class AbstractRPController extends AbstractRestfulController
   // create view model from aliases
   protected function createViewWithParts($_partsAliases)
   {
-    $view = new ViewModel();
+    $view = new ViewModel(array(
+      'room_id' => intval($this->params("room_id")),
+    ));
 
     foreach ($_partsAliases as $p)
     {
