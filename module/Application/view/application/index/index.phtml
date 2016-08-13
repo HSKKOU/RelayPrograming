@@ -32,10 +32,16 @@ $this->inlineScript()->appendScript(
 var \$signUpDOM = \$("#sign_up"),
     \$signUpForm = \$("#sign_up_form"),
     userId = -1,
-    roomId = \$("#room_id").val();
+    roomId = \$("#room_id").val(),
+    userIdCN = "RPRoom" + roomId + "Uid";
 
 /* init */
 (function init(){
+  if($.cookie(userIdCN) > 0){
+    userId = $.cookie(userIdCN);
+    signIn();
+    return;
+  }
   setLoginEvent();
 })();
 /* end init */
@@ -70,19 +76,34 @@ function signUp(){
 }
 
 function succeedSignUp(_user){
-  \$signUpForm.off();
-  \$signUpDOM.remove();
-
   /* set User Info */
   log("user", _user);
   userId = +_user['id'];
+  $.cookie(userIdCN, userId, { "expires": 1 });
   /* end set User Info */
 
-  setMainEvents();
+  signIn();
 }
 
 function failedSignUp(){
   alert("Failed to create or sign up.");
+}
+
+function signIn(){
+  var postData = { "type": "signIn", "user_id": userId, "room_id": roomId };
+  post({"url": "$api_user", "type": "post", "query": postData,
+    "success": function(_data){
+      log("data", _data);
+      \$signUpForm.off();
+      \$signUpDOM.remove();
+
+      setMainEvents();
+    },
+    "fail": function(_data){
+      log("data", _data);
+    },
+    "complete": function(_data){ /* nothing to do. */ }
+  });
 }
 /* end login */
 

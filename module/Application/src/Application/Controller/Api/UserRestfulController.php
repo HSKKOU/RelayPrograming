@@ -28,11 +28,7 @@ class UserRestfulController extends AbstractApiController
   public function get($id)
   {
     $gotModel = $this->getUserTable()->getUser($id);
-    return $this->makeSuccessJson(array(
-      'id' => $gotModel->id,
-      'name' => $gotModel->name,
-      'color' => $gotModel->color,
-    ));
+    return $this->makeSuccessJson($gotModel->exchangeToArray());
   }
 
   public function create($data)
@@ -44,8 +40,8 @@ class UserRestfulController extends AbstractApiController
         return $this->signUp($newModel);
       case 'signIn':
         if(!isset($data['room_id'])){ return $this->makeFailedJson("no room_id for sign in"); }
-        if(!isset($data['id'])){ return $this->makeFailedJson("no user id for sign in"); }
-        return $this->signIn(+$data['id'], +$data['room_id']);
+        if(!isset($data['user_id'])){ return $this->makeFailedJson("no user id for sign in"); }
+        return $this->signIn(+$data['user_id'], +$data['room_id']);
       default:
         break;
     }
@@ -67,7 +63,7 @@ class UserRestfulController extends AbstractApiController
   // login User
   private function signIn($_user_id, $_room_id)
   {
-    $existUser = $this->get($_user_id);
+    $existUser = $this->getUserTable()->getUser($_user_id);
     if ($existUser->room_id != $_room_id) {
       return $this->makeFailedJson(array());
     }
