@@ -1,7 +1,7 @@
 <?php
 namespace Application\Model;
 
-class UserModel
+class UserModel extends AModel
 {
   public $id;
   public $name;

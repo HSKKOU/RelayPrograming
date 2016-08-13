@@ -39,7 +39,6 @@ class UserRestfulController extends AbstractApiController
   {
     $newModel = new UserModel();
     $newModel->exchangeArray($data);
-    $newModel->name = 'User';
     $result = $this->getUserTable()->saveUser($newModel);
     $savedData = array();
     if ($result == 1) {
