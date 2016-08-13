@@ -3,7 +3,6 @@ namespace Application\Model;
 
 class UserModel extends AModel
 {
-  public $id;
   public $name;
   public $color;
 

@@ -7,4 +7,10 @@ abstract class AModel
 
   abstract public function exchangeArray($data);
   abstract public function exchangeToArray();
+
+  public function exchangeToArrayWithoutId()
+  {
+    $arr = $this->exchangeToArray();
+    unset($arr['id']);
+  }
 }
