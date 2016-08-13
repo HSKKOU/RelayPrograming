@@ -18,6 +18,7 @@
 <!-- Login lightbox -->
 <?= $this->loginlb ?>
 
+<input id="room_id" type="hidden" value="<?= $this->room_id ?>" />
 
 
 
@@ -28,46 +29,49 @@ $api_user = $this->url('api/default', array('controller' => 'user'));
 $this->inlineScript()->appendScript(
 <<<__END__
 
-var \$loginDOM = \$("#login"),
-    \$loginForm = \$("#login_form"),
-    userId = -1;
-(function main(){
+var \$signUpDOM = \$("#sign_up"),
+    \$signUpForm = \$("#sign_up_form"),
+    userId = -1,
+    roomId = \$("#room_id").val();
+
+/* init */
+(function init(){
   setLoginEvent();
 })();
-
+/* end init */
 
 
 /* login */
 function setLoginEvent(){
-  \$loginForm.on("submit", function(_e){
+  \$signUpForm.on("submit", function(_e){
     _e.preventDefault();
-    login();
+    signUp();
     return false;
   });
 }
 
-function login(){
-  var name = \$loginForm.find('.input_name > input').val(),
-      color = \$loginForm.find('.input_color > input').val();
-  log("user inputs", name, color);
+function signUp(){
+  var name = \$signUpForm.find('.input_name > input').val(),
+      color = \$signUpForm.find('.input_color > input').val();
+  log("user inputs", name, color, roomId);
 
-  var postData = { "name": name, "color": color };
+  var postData = { "type": "signUp", "name": name, "color": color, "room_id": roomId };
   post({"url": "$api_user", "type": "post", "query": postData,
     "success": function(_data){
       log("data", _data);
-      succeedLogin(_data['data']);
+      succeedSignUp(_data['data']);
     },
     "fail": function(_data){
       log("data", _data);
-      failedLogin();
+      failedSignUp();
     },
     "complete": function(_data){ /* nothing to do. */ }
   });
 }
 
-function succeedLogin(_user){
-  \$loginForm.off();
-  \$loginDOM.remove();
+function succeedSignUp(_user){
+  \$signUpForm.off();
+  \$signUpDOM.remove();
 
   /* set User Info */
   log("user", _user);
@@ -77,8 +81,8 @@ function succeedLogin(_user){
   setMainEvents();
 }
 
-function failedLogin(){
-  alert("Failed to create or login.");
+function failedSignUp(){
+  alert("Failed to create or sign up.");
 }
 /* end login */
 
