@@ -27,3 +27,27 @@ function post(_opt){
     "complete": function(_data){ completeCB(_data); }
   });
 }
+
+/* escape special character */
+function replaceSpecialChara(_str){
+  return _str.replace(/&/g,"&amp;")
+             .replace(/ /g,"&nbsp;")
+             .replace(/"/g,"&quot;")
+             .replace(/'/g,"&#039;")
+             .replace(/</g,"&lt;")
+             .replace(/>/g,"&gt;");
+}
+
+/*  */
+function createPrettyCodeHtml(_codeStr){
+  return $("<code class='prettyprint'>" + _codeStr + "</code>");
+}
+
+
+
+/* Cookie */
+function createRoomCookieName(_room_id, _column){
+  return "RPRoom" + roomId + _column;
+}
+function cookieNameUserId(_room_id){ return createRoomCookieName(_room_id, "Uid"); }
+/* end Cookie */

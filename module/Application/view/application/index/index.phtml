@@ -36,7 +36,7 @@ var \$signUpDOM = \$("#sign_up"),
     \$codeViewDOM = \$("#code_view"),
     userId = -1,
     roomId = \$("#room_id").val(),
-    userIdCN = "RPRoom" + roomId + "Uid",
+    userIdCN = cookieNameUserId(roomId),
     userName = "",
     userColor = "#ffffff";
 /* end declare members */
@@ -82,12 +82,7 @@ function signUp(){
 }
 
 function succeedSignUp(_user){
-  /* set User Id */
   log("user", _user);
-  userId = +_user['id'];
-  $.cookie(userIdCN, userId, { "expires": 1 });
-  /* end set User Id */
-
   signIn();
 }
 function failedSignUp(){ alert("Failed to create or sign up."); }
@@ -148,13 +143,8 @@ function setMainEvents(){
   });
 }
 
-function resetUserInput(){
-  \$userInput.val("");
-}
-
-function setUserInfo2UI(){
-  \$("#user_ico").css({"background": userColor}).text(userName);
-}
+function resetUserInput(){ \$userInput.val(""); }
+function setUserInfo2UI(){ \$("#user_ico").css({"background": userColor}).text(userName); }
 
 function getCodesInRoom(){
   post({"url": "$api_code?room_id="+roomId, "type": "get", "query": {},
@@ -169,11 +159,7 @@ function getCodesInRoom(){
   });
 }
 
-function setRecievedCodes(_codes){
-  for(var i in _codes){
-    addRecievedCode(_codes[i]);
-  }
-}
+function setRecievedCodes(_codes){ for(var i in _codes){ addRecievedCode(_codes[i]); } }
 
 function addRecievedCode(_code){
   var \$codeRow = createCodeRow(_code['code']);
@@ -181,21 +167,11 @@ function addRecievedCode(_code){
   prettyPrint();
 }
 
-function createCodeRow(_codeStr){
-  var \$codeRow = \$codeRowTmp.clone();
-  \$codeRow.html("<code class='prettyprint'>" + _codeStr + "</code>");
-  return \$codeRow;
-}
+function createCodeRow(_codeStr){ return \$codeRowTmp.clone().append(createPrettyCodeHtml(_codeStr)); }
 
 function postCode(){
-  var codeText = \$userInputForm.find('#user_input_field > input').val()
-                .replace(/&/g,"&amp;")
-                .replace(/ /g,"&nbsp;")
-                .replace(/"/g,"&quot;")
-                .replace(/'/g,"&#039;")
-                .replace(/</g,"&lt;")
-                .replace(/>/g,"&gt;"),
-      postData = { "code": codeText, "user_id": userId, "room_id": roomId };
+  var codeText = \$userInputForm.find('#user_input_field > input').val(),
+      postData = { "code": replaceSpecialChara(codeText), "user_id": userId, "room_id": roomId };
   post({"url": "$api_code", "type": "post", "query": postData,
     "success": function(_data){
       log("success post code", _data);
