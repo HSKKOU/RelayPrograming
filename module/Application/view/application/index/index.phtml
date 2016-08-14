@@ -26,6 +26,7 @@
 <?php
 $api_user = $this->url('api/default', array('controller' => 'user'));
 $api_code = $this->url('api/default', array('controller' => 'code'));
+$api_chat = $this->url('api/default', array('controller' => 'chat'));
 
 $this->inlineScript()->appendScript(
 <<<__END__
@@ -134,31 +135,35 @@ function setMainEvents(){
 
   resetUserInput();
   setUserInfo2UI();
-  getCodesInRoom();
+
+  getTextsInRoom("$api_code", roomId, setRecievedCodes);
+  getTextsInRoom("$api_chat", roomId, setRecievedChatTexts);
 
   \$userInputForm.on("submit", function(_e){
     _e.preventDefault();
-    postCode();
+    var inputText = \$userInputForm.find('#user_input_field > input').val(),
+        postData = { "user_id": userId, "room_id": roomId };
+    log(inputText.indexOf(":"));
+    if(inputText.indexOf(":") == 0){
+      postData["code"] = replaceSpecialChara(inputText.substr(1));
+      postTexts("$api_code", postData, succeedPostCode);
+    } else {
+      postData["text"] = replaceSpecialChara(inputText);
+      postTexts("$api_chat", postData, succeedPostChatText);
+    }
     return false;
   });
 }
 
 function resetUserInput(){ \$userInput.val(""); }
 function setUserInfo2UI(){ \$("#user_ico").css({"background": userColor}).text(userName); }
+/* end main routine */
 
-function getCodesInRoom(){
-  post({"url": "$api_code?room_id="+roomId, "type": "get", "query": {},
-    "success": function(_data){
-      log("success get codes "+roomId, _data);
-      setRecievedCodes(_data['data']);
-    },
-    "fail": function(_data){
-      log("fail get codes "+roomId, _data);
-    },
-    "complete": function(_data){ /* nothing to do. */ }
-  });
-}
 
+
+
+
+/* code */
 function setRecievedCodes(_codes){ for(var i in _codes){ addRecievedCode(_codes[i]); } }
 
 function addRecievedCode(_code){
@@ -169,27 +174,30 @@ function addRecievedCode(_code){
 
 function createCodeRow(_codeStr){ return \$codeRowTmp.clone().append(createPrettyCodeHtml(_codeStr)); }
 
-function postCode(){
-  var codeText = \$userInputForm.find('#user_input_field > input').val(),
-      postData = { "code": replaceSpecialChara(codeText), "user_id": userId, "room_id": roomId };
-  post({"url": "$api_code", "type": "post", "query": postData,
-    "success": function(_data){
-      log("success post code", _data);
-      succeedPostCode(_data['data']);
-    },
-    "fail": function(_data){
-      log("fail post code", _data);
-      alert("Failed post code");
-    },
-    "complete": function(_data){ /* nothing to do. */ }
-  });
-}
-
 function succeedPostCode(_code){
   resetUserInput();
   addRecievedCode(_code);
 }
-/* end main routine */
+/* end code */
+
+
+
+
+
+/* chat */
+function setRecievedChatTexts(_ctexts){ for(var i in _ctexts){ addRecievedChatText(_ctexts[i]); } }
+
+function addRecievedChatText(_ctext){
+  log(_ctext);
+  // var \$codeRow = createCodeRow(_ctext['text']);
+  // \$codeRow.appendTo(\$codeViewField);
+}
+
+function succeedPostChatText(_ctext){
+  resetUserInput();
+  addRecievedChatText(_ctext);
+}
+/* end chat */
 
 __END__
 );

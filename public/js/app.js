@@ -38,7 +38,7 @@ function replaceSpecialChara(_str){
              .replace(/>/g,"&gt;");
 }
 
-/*  */
+/* syntax highlight */
 function createPrettyCodeHtml(_codeStr){
   return $("<code class='prettyprint'>" + _codeStr + "</code>");
 }
@@ -51,3 +51,34 @@ function createRoomCookieName(_room_id, _column){
 }
 function cookieNameUserId(_room_id){ return createRoomCookieName(_room_id, "Uid"); }
 /* end Cookie */
+
+
+
+/* code and chat */
+function getTextsInRoom(_api, _roomId, _successCB){
+  var getUrl = _api+"?room_id="+_roomId;
+  post({"url": getUrl, "type": "get", "query": {},
+    "success": function(_data){
+      log("success get "+getUrl, _data);
+      _successCB(_data['data']);
+    },
+    "fail": function(_data){
+      log("fail get "+getUrl, _data);
+    },
+    "complete": function(_data){ /* nothing to do. */ }
+  });
+}
+
+function postTexts(_api, _postData, _successCB){
+  post({"url": _api, "type": "post", "query": _postData,
+    "success": function(_data){
+      log("success post "+_api, _data);
+      _successCB(_data['data']);
+    },
+    "fail": function(_data){
+      log("fail post "+_api, _data);
+    },
+    "complete": function(_data){ /* nothing to do. */ }
+  });
+}
+/* end code and chat */
