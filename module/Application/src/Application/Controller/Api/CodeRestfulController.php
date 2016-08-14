@@ -23,7 +23,7 @@ class CodeRestfulController extends AbstractApiController
   public function getList()
   {
     $room_id = 0;
-    if (isset($_GET['room_id'])) {
+    if (isset($_GET['room_id']) && preg_match('/[0-9]+/', $_GET['room_id'])) {
       $room_id = $_GET['room_id'];
     }
     $codes = $this->getCodeTable()->getCodeListByRoomId($room_id);
