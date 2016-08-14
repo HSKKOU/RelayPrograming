@@ -61,6 +61,8 @@ function createChatRow(_ctext, $_tmp){
   return $_tmp;
 }
 
+function isCodeOrChatText(_text){ return _text.indexOf(":") == 0; }
+
 function getTextsInRoom(_api, _roomId, _successCB){
   var getUrl = _api+"?room_id="+_roomId;
   post({"url": getUrl, "type": "get", "query": {},

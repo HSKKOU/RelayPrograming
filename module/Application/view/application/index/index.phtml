@@ -44,7 +44,6 @@ var \$signUpDOM = \$("#sign_up"),
 /* end declare members */
 
 
-
 /* init */
 (function init(){
   if($.cookie(userIdCN) > 0){
@@ -55,9 +54,6 @@ var \$signUpDOM = \$("#sign_up"),
   setLoginEvent();
 })();
 /* end init */
-
-
-
 
 
 /* login */
@@ -72,24 +68,16 @@ function setLoginEvent(){
 function signUp(){
   var name = \$signUpForm.find('.input_name > input').val(),
       color = \$signUpForm.find('.input_color > input').val();
-  log("user inputs", name, color, roomId);
 
   var postData = { "type": "signUp", "name": name, "color": color, "room_id": roomId };
   post({"url": "$api_user", "type": "post", "query": postData,
-    "success": function(_data){
-      log("success signUp", _data);
-      succeedSignUp(_data['data']);
-    },
-    "fail": function(_data){
-      log("fail signUp", _data);
-      failedSignUp();
-    },
+    "success": function(_data){ succeedSignUp(_data['data']); },
+    "fail": function(_data){ failedSignUp(); },
     "complete": function(_data){ /* nothing to do. */ }
   });
 }
 
 function succeedSignUp(_user){
-  log("user", _user);
   userId = +_user['id'];
   signIn();
 }
@@ -98,25 +86,18 @@ function failedSignUp(){ alert("Failed to create or sign up."); }
 function signIn(){
   var postData = { "type": "signIn", "user_id": userId, "room_id": roomId };
   post({"url": "$api_user", "type": "post", "query": postData,
-    "success": function(_data){
-      log("success signIn", _data);
-      succeedSignIn(_data['data']);
-    },
-    "fail": function(_data){
-      log("fail signIn", _data);
-      alert("Failed Sign In.");
-    },
+    "success": function(_data){ succeedSignIn(_data['data']); },
+    "fail": function(_data){ failedSignIn(); },
     "complete": function(_data){ /* nothing to do. */ }
   });
 }
 
 function succeedSignIn(_user){
   /* set User Info */
-  log("user", _user);
   userId = +_user['id'];
-  $.cookie(userIdCN, userId, { "expires": 1 });
   userName = _user['name'];
   userColor = _user['color'];
+  $.cookie(userIdCN, userId, { "expires": 1 });
   /* end set User Info */
 
   \$signUpForm.off();
@@ -124,12 +105,8 @@ function succeedSignIn(_user){
 
   setMainEvents();
 }
+function failedSignIn(){ alert("Failed Sign In."); }
 /* end login */
-
-
-
-
-
 
 
 /* main routine */
@@ -140,8 +117,6 @@ var \$codeRowTmp = \$codeViewDOM.find(".code_row").remove().removeClass("templat
     \$codeViewField = \$("#code_view_field"),
     \$chatViewField = \$("#chat_view_field");
 function setMainEvents(){
-  log("set Main Events", userId);
-
   resetUserInput();
   setUserInfo2UI();
 
@@ -152,8 +127,7 @@ function setMainEvents(){
     _e.preventDefault();
     var inputText = \$userInputForm.find('#user_input_field > input').val(),
         postData = { "user_id": userId, "room_id": roomId };
-    log(inputText.indexOf(":"));
-    if(inputText.indexOf(":") == 0){
+    if(isCodeOrChatText(inputText)){
       postData["code"] = replaceSpecialChara(inputText.substr(1));
       postTexts("$api_code", postData, succeedPostCode);
     } else {
@@ -169,35 +143,17 @@ function setUserInfo2UI(){ \$("#user_ico").css({"background": userColor}).text(u
 /* end main routine */
 
 
-
-
-
 /* code */
 function setRecievedCodes(_codes){ for(var i in _codes){ addRecievedCode(_codes[i]); } }
-function addRecievedCode(_code){
-  createCodeRow(_code, \$codeRowTmp.clone()).appendTo(\$codeViewField);
-  prettyPrint();
-}
-function succeedPostCode(_code){
-  resetUserInput();
-  addRecievedCode(_code);
-}
+function addRecievedCode(_code){ createCodeRow(_code, \$codeRowTmp.clone()).appendTo(\$codeViewField); prettyPrint(); }
+function succeedPostCode(_code){ resetUserInput(); addRecievedCode(_code); }
 /* end code */
-
-
-
-
-
-
 
 
 /* chat */
 function setRecievedChatTexts(_ctexts){ for(var i in _ctexts){ addRecievedChatText(_ctexts[i]); } }
 function addRecievedChatText(_ctext){ createChatRow(_ctext, \$chatRowTmp.clone()).appendTo(\$chatViewField); }
-function succeedPostChatText(_ctext){
-  resetUserInput();
-  addRecievedChatText(_ctext);
-}
+function succeedPostChatText(_ctext){ resetUserInput(); addRecievedChatText(_ctext); }
 /* end chat */
 
 __END__
