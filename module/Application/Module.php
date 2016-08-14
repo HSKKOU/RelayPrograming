@@ -13,6 +13,9 @@ use Application\Model\CodeModelTable;
 use Application\Model\ChatTextModel;
 use Application\Model\ChatTextModelTable;
 
+use Application\Model\RoomModel;
+use Application\Model\RoomModelTable;
+
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\TableGateway\TableGateway;
 
@@ -78,6 +81,18 @@ class Module
           $resultSetPrototype = new ResultSet();
           $resultSetPrototype->setArrayObjectPrototype(new ChatTextModel());
           return new TableGateway('chat_texts', $dbAdapter, null, $resultSetPrototype);
+        },
+
+        'Application\Model\RoomModelTable' => function($sm){
+          $tableGateway = $sm->get('RoomModelTableGateway');
+          $table = new RoomModelTable($tableGateway);
+          return $table;
+        },
+        'RoomModelTableGateway' => function($sm){
+          $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+          $resultSetPrototype = new ResultSet();
+          $resultSetPrototype->setArrayObjectPrototype(new RoomModel());
+          return new TableGateway('rooms', $dbAdapter, null, $resultSetPrototype);
         },
       ),
     );

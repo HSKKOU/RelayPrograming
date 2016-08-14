@@ -27,6 +27,7 @@
 $api_user = $this->url('api/default', array('controller' => 'user'));
 $api_code = $this->url('api/default', array('controller' => 'code'));
 $api_chat = $this->url('api/default', array('controller' => 'chat'));
+$api_room = $this->url('api/default', array('controller' => 'room'));
 
 $this->inlineScript()->appendScript(
 <<<__END__
@@ -155,6 +156,18 @@ function setRecievedChatTexts(_ctexts){ for(var i in _ctexts){ addRecievedChatTe
 function addRecievedChatText(_ctext){ createChatRow(_ctext, \$chatRowTmp.clone()).appendTo(\$chatViewField); }
 function succeedPostChatText(_ctext){ resetUserInput(); addRecievedChatText(_ctext); }
 /* end chat */
+
+
+/* member */
+function setMemberStatus(_mStatus){
+  // TODO: impl
+}
+/* end member */
+
+
+/* heart beat */
+
+/* end heart beat */
 
 __END__
 );
