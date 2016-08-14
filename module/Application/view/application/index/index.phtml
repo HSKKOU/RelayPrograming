@@ -32,6 +32,7 @@ $this->inlineScript()->appendScript(
 /* declare members */
 var \$signUpDOM = \$("#sign_up"),
     \$signUpForm = \$("#sign_up_form"),
+    \$userInputDOM = \$("#user_input"),
     userId = -1,
     roomId = \$("#room_id").val(),
     userIdCN = "RPRoom" + roomId + "Uid",
@@ -130,6 +131,12 @@ function succeedSignIn(_user){
 /* main routine */
 function setMainEvents(){
   log("set Main Events", userId);
+
+  setUserInfo2UI();
+}
+
+function setUserInfo2UI(){
+  \$("#user_ico").css({"background": userColor}).text(userName);
 }
 /* end main routine */
 
