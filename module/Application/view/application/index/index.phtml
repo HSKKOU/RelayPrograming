@@ -33,7 +33,7 @@ $this->inlineScript()->appendScript(
 /* declare members */
 var \$signUpDOM = \$("#sign_up"),
     \$signUpForm = \$("#sign_up_form"),
-    \$userInputDOM = \$("#user_input"),
+    \$codeViewDOM = \$("#code_view"),
     userId = -1,
     roomId = \$("#room_id").val(),
     userIdCN = "RPRoom" + roomId + "Uid",
@@ -130,6 +130,7 @@ function succeedSignIn(_user){
 
 
 /* main routine */
+var \$codeRowTmp = \$codeViewDOM.find(".code_row").remove().removeClass(".template");
 function setMainEvents(){
   log("set Main Events", userId);
 
@@ -142,16 +143,26 @@ function setUserInfo2UI(){
 }
 
 function getCodesInRoom(){
-  var postData = { "room_id": roomId };
-  post({"url": "$api_code", "type": "get", "query": postData,
+  post({"url": "$api_code?room_id="+roomId, "type": "get", "query": {},
     "success": function(_data){
       log("data", _data);
+      setRecievedCodes(_data['data']);
     },
     "fail": function(_data){
       log("data", _data);
     },
     "complete": function(_data){ /* nothing to do. */ }
   });
+}
+
+function setRecievedCodes(_codes){
+  for(var i in _codes){
+    log("code", _codes[i]);
+  }
+}
+
+function addRecievedCode(_code){
+
 }
 /* end main routine */
 
