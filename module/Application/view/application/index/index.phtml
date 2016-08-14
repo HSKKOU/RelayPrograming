@@ -130,7 +130,7 @@ function succeedSignIn(_user){
 
 
 /* main routine */
-var \$codeRowTmp = \$codeViewDOM.find(".code_row").remove().removeClass(".template");
+var \$codeRowTmp = \$codeViewDOM.find(".code_row").remove().removeClass("template");
 function setMainEvents(){
   log("set Main Events", userId);
 
@@ -156,16 +156,23 @@ function getCodesInRoom(){
 }
 
 function setRecievedCodes(_codes){
-  var \$codeView = \$("#code_view");
+  var \$codeViewField = \$("#code_view_field");
   for(var i in _codes){
-    var code = _codes[i],
-        \$codeRow = \$codeRowTmp.clone();
-    \$codeRow.text(code['code']).appendTo(\$codeView);
+    var code = _codes[i];
+    var \$codeRow = createCodeRow(code['code']);
+    \$codeRow.appendTo(\$codeViewField);
   }
+  prettyPrint();
 }
 
 function addRecievedCode(_code){
 
+}
+
+function createCodeRow(_codeStr){
+  var \$codeRow = \$codeRowTmp.clone();
+  \$codeRow.html("<code class='prettyprint'>" + _codeStr + "</code>");
+  return \$codeRow;
 }
 /* end main routine */
 

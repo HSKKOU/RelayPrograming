@@ -21,6 +21,9 @@
   background-color: #57a900;
 }
 
+/* bootstrap.css, pretty.css */
+code{display: block;overflow: hidden;width: 100%;word-wrap: break-word;white-space: normal;background: transparent;font-size: 16px;}
+
 
 /* layout.phtml */
 html {}
@@ -47,6 +50,8 @@ div.container {position: relative;padding: 20px;}
 
 /* code view */
 #code_view{background: #fbb;}
+  #code_view_field{padding: 10px;}
+    #code_view_field > .code_row{width: 100%;}
 
 /* chat view */
 #chat_view{right: 120px;width: 300px;background: #bfb;}

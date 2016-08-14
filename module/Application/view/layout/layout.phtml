@@ -12,6 +12,7 @@
 
     <!-- Le styles -->
     <?php echo $this->headLink(array('rel' => 'shortcut icon', 'type' => 'image/vnd.microsoft.icon', 'href' => $this->basePath() . '/img/favicon.ico'))
+                    ->prependStylesheet($this->basePath() . '/css/prettify.css')
                     ->prependStylesheet($this->basePath() . '/css/style.css')
                     ->prependStylesheet($this->basePath() . '/css/bootstrap-theme.min.css')
                     ->prependStylesheet($this->basePath() . '/css/bootstrap.min.css') ?>
@@ -20,6 +21,8 @@
     <?php echo $this->headScript()
                     ->prependFile($this->basePath() . '/js/app.js')
                     ->prependFile($this->basePath() . '/js/jquery.cookie.js')
+                    ->prependFile($this->basePath() . '/js/prettify.js')
+                    ->prependFile($this->basePath() . '/js/lang-css.js')
                     ->prependFile($this->basePath() . '/js/bootstrap.min.js')
                     ->prependFile($this->basePath() . '/js/jquery.min.js')
                     ->prependFile($this->basePath() . '/js/respond.min.js', 'text/javascript', array('conditional' => 'lt IE 9',))
