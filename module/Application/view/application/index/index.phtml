@@ -137,6 +137,8 @@ function setMainEvents(){
     }
     return false;
   });
+
+  startHeartBeat();
 }
 
 function resetUserInput(){ \$userInput.val(""); }
@@ -166,7 +168,26 @@ function setMemberStatus(_mStatus){
 
 
 /* heart beat */
+var heartBeatSPB = 1.0,
+    canPostHB = true;
+function startHeartBeat(){
+  heartBeat();
+}
 
+function postHeartBeat(){
+  if(!canPostHB){ return; }
+  canPostHB = false;
+  log("post");
+  setTimeout(function(){ canPostHB = true; }, 1400);
+}
+
+function heartBeat(){
+  log("heart beat");
+  setTimeout(function(){
+    postHeartBeat();
+    heartBeat();
+  }, heartBeatSPB * 1000);
+}
 /* end heart beat */
 
 __END__
