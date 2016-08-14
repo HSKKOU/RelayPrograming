@@ -70,11 +70,11 @@ function signUp(){
   var postData = { "type": "signUp", "name": name, "color": color, "room_id": roomId };
   post({"url": "$api_user", "type": "post", "query": postData,
     "success": function(_data){
-      log("data", _data);
+      log("success signUp", _data);
       succeedSignUp(_data['data']);
     },
     "fail": function(_data){
-      log("data", _data);
+      log("fail signUp", _data);
       failedSignUp();
     },
     "complete": function(_data){ /* nothing to do. */ }
@@ -96,11 +96,11 @@ function signIn(){
   var postData = { "type": "signIn", "user_id": userId, "room_id": roomId };
   post({"url": "$api_user", "type": "post", "query": postData,
     "success": function(_data){
-      log("data", _data);
+      log("success signIn", _data);
       succeedSignIn(_data['data']);
     },
     "fail": function(_data){
-      log("data", _data);
+      log("fail signIn", _data);
       alert("Failed Sign In.");
     },
     "complete": function(_data){ /* nothing to do. */ }
@@ -145,11 +145,11 @@ function setUserInfo2UI(){
 function getCodesInRoom(){
   post({"url": "$api_code?room_id="+roomId, "type": "get", "query": {},
     "success": function(_data){
-      log("data", _data);
+      log("success get codes "+roomId, _data);
       setRecievedCodes(_data['data']);
     },
     "fail": function(_data){
-      log("data", _data);
+      log("fail get codes "+roomId, _data);
     },
     "complete": function(_data){ /* nothing to do. */ }
   });
