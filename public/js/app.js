@@ -1,5 +1,5 @@
 /* simplified log for debug */
-function log(_){ console.log.apply(console, arguments); }
+function log(_){ if(true){ console.log.apply(console, arguments); } }
 
 /* ajax post method
  * - url[string]        : post url
