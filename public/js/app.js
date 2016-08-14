@@ -55,6 +55,12 @@ function cookieNameUserId(_room_id){ return createRoomCookieName(_room_id, "Uid"
 
 
 /* code and chat */
+function createCodeRow(_code, $_tmp){ return $_tmp.append(createPrettyCodeHtml(_code['code'])); }
+function createChatRow(_ctext, $_tmp){
+  $_tmp.find(".user_ico").css({"background": _ctext['user_color']}).text(_ctext['user_name']).next(".text").text(_ctext['text']);
+  return $_tmp;
+}
+
 function getTextsInRoom(_api, _roomId, _successCB){
   var getUrl = _api+"?room_id="+_roomId;
   post({"url": getUrl, "type": "get", "query": {},

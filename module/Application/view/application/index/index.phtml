@@ -43,6 +43,8 @@ var \$signUpDOM = \$("#sign_up"),
     userColor = "#ffffff";
 /* end declare members */
 
+
+
 /* init */
 (function init(){
   if($.cookie(userIdCN) > 0){
@@ -53,6 +55,9 @@ var \$signUpDOM = \$("#sign_up"),
   setLoginEvent();
 })();
 /* end init */
+
+
+
 
 
 /* login */
@@ -169,16 +174,10 @@ function setUserInfo2UI(){ \$("#user_ico").css({"background": userColor}).text(u
 
 /* code */
 function setRecievedCodes(_codes){ for(var i in _codes){ addRecievedCode(_codes[i]); } }
-
 function addRecievedCode(_code){
-  var \$codeRow = createCodeRow(_code);
-  \$codeRow.appendTo(\$codeViewField);
+  createCodeRow(_code, \$codeRowTmp.clone()).appendTo(\$codeViewField);
   prettyPrint();
 }
-function createCodeRow(_code){
-  return \$codeRowTmp.clone().append(createPrettyCodeHtml(_code['code']));
-}
-
 function succeedPostCode(_code){
   resetUserInput();
   addRecievedCode(_code);
@@ -194,18 +193,7 @@ function succeedPostCode(_code){
 
 /* chat */
 function setRecievedChatTexts(_ctexts){ for(var i in _ctexts){ addRecievedChatText(_ctexts[i]); } }
-
-function addRecievedChatText(_ctext){
-  var \$chatRow = createChatRow(_ctext);
-  \$chatRow.appendTo(\$chatViewField);
-}
-function createChatRow(_ctext){
-  var \$chatRow = \$chatRowTmp.clone();
-  \$chatRow.find(".user_ico").css({"background": _ctext['user_color']}).text(_ctext['user_name'])
-  .next(".text").text(_ctext['text']);
-  return \$chatRow;
-}
-
+function addRecievedChatText(_ctext){ createChatRow(_ctext, \$chatRowTmp.clone()).appendTo(\$chatViewField); }
 function succeedPostChatText(_ctext){
   resetUserInput();
   addRecievedChatText(_ctext);
