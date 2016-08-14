@@ -64,6 +64,7 @@ div.container {position: relative;padding: 20px;}
 #members_view{right: 0;width: 100px;background: #bbf;}
   #members_view_field{padding: 0 10px;width: 100%;height: 100%;}
     .member_row{position: relative;margin: 10px auto;width: 100%;height: 30px;line-height: 30px;text-align: center;background: #f52;}
+    .member_row.turn{border: 2px solid red;line-height: 26px;}
 
 /* user input */
 #user_input_form{position: absolute;bottom: 0;left: 0;width: 100%;height: 50px;}

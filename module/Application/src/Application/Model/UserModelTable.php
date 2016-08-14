@@ -15,6 +15,19 @@ class UserModelTable extends AModelTable
     return $this->getModel($id);
   }
 
+  public function getUsersInRoom($_room_id)
+  {
+    $room_id = (int)$_room_id;
+    $rowSet = $this->tableGateway->select(array('room_id' => $room_id));
+    $users = array();
+    foreach ($rowSet as $row) {
+      if(!$row) { continue; }
+      $users[] = $row;
+    }
+
+    return $users;
+  }
+
   public function getLastUser()
   {
     return $this->getLastModel();

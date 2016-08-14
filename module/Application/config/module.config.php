@@ -82,10 +82,11 @@ return array(
       'Application\Controller\Watch' => Controller\WatchController::class,
       'Application\Controller\Admin' => Controller\AdminController::class,
 
-      'Application\Controller\Api\User' => Controller\Api\UserRestfulController::class,
-      'Application\Controller\Api\Code' => Controller\Api\CodeRestfulController::class,
-      'Application\Controller\Api\Chat' => Controller\Api\ChatTextRestfulController::class,
-      'Application\Controller\Api\Room' => Controller\Api\RoomRestfulController::class,
+      'Application\Controller\Api\User'    => Controller\Api\UserRestfulController::class,
+      'Application\Controller\Api\Code'    => Controller\Api\CodeRestfulController::class,
+      'Application\Controller\Api\Chat'    => Controller\Api\ChatTextRestfulController::class,
+      'Application\Controller\Api\Room'    => Controller\Api\RoomRestfulController::class,
+      'Application\Controller\Api\Member'  => Controller\Api\MemberRestfulController::class,
     ),
   ),
   'view_manager' => array(

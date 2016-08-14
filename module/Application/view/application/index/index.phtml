@@ -28,6 +28,7 @@ $api_user = $this->url('api/default', array('controller' => 'user'));
 $api_code = $this->url('api/default', array('controller' => 'code'));
 $api_chat = $this->url('api/default', array('controller' => 'chat'));
 $api_room = $this->url('api/default', array('controller' => 'room'));
+$api_member = $this->url('api/default', array('controller' => 'member'));
 
 $this->inlineScript()->appendScript(
 <<<__END__
@@ -123,6 +124,7 @@ function setMainEvents(){
 
   getTextsInRoom("$api_code", roomId, setRecievedCodes);
   getTextsInRoom("$api_chat", roomId, setRecievedChatTexts);
+  getMemberStatus();
 
   \$userInputForm.on("submit", function(_e){
     _e.preventDefault();
@@ -161,8 +163,26 @@ function succeedPostChatText(_ctext){ resetUserInput(); addRecievedChatText(_cte
 
 
 /* member */
-function setMemberStatus(_mStatus){
-  // TODO: impl
+var \$membersView = \$("#members_view_field"),
+    \$memberRowTmp = \$membersView.find(".member_row").remove().removeClass("template");
+function getMemberStatus(){
+  post({"url": "$api_member?room_id="+roomId, "type": "get", "query": {},
+    "success": function(_data){ setMemberStatus(_data['data']) },
+    "fail": function(_data){ /* nothing to do. */ },
+    "complete": function(_data){ /* nothing to do. */ }
+  });
+}
+
+function setMemberStatus(_members){
+  log("members", _members);
+  for(var i in _members['members']){ setMember(_members['members'][i], _members['turn_user_id']); }
+}
+
+function setMember(_member, _tui){
+  var \$memberRow = \$memberRowTmp.clone();
+  \$memberRow.css({"background": _member['color']}).text(_member['name']);
+  if(_member['id'] == _tui){ \$memberRow.addClass("turn"); }
+  \$memberRow.appendTo(\$membersView);
 }
 /* end member */
 
@@ -171,6 +191,7 @@ function setMemberStatus(_mStatus){
 var heartBeatSPB = 1.0,
     canPostHB = true;
 function startHeartBeat(){
+  postHeartBeat();
   heartBeat();
 }
 
