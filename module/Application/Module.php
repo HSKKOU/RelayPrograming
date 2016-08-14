@@ -10,6 +10,9 @@ use Application\Model\UserModelTable;
 use Application\Model\CodeModel;
 use Application\Model\CodeModelTable;
 
+use Application\Model\ChatTextModel;
+use Application\Model\ChatTextModelTable;
+
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\TableGateway\TableGateway;
 
@@ -63,6 +66,18 @@ class Module
           $resultSetPrototype = new ResultSet();
           $resultSetPrototype->setArrayObjectPrototype(new CodeModel());
           return new TableGateway('codes', $dbAdapter, null, $resultSetPrototype);
+        },
+
+        'Application\Model\ChatTextModelTable' => function($sm){
+          $tableGateway = $sm->get('ChatTextModelTableGateway');
+          $table = new ChatTextModelTable($tableGateway);
+          return $table;
+        },
+        'ChatTextModelTableGateway' => function($sm){
+          $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+          $resultSetPrototype = new ResultSet();
+          $resultSetPrototype->setArrayObjectPrototype(new ChatTextModel());
+          return new TableGateway('chat_texts', $dbAdapter, null, $resultSetPrototype);
         },
       ),
     );

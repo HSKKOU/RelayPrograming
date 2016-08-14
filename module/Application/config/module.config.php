@@ -84,6 +84,7 @@ return array(
 
       'Application\Controller\Api\User' => Controller\Api\UserRestfulController::class,
       'Application\Controller\Api\Code' => Controller\Api\CodeRestfulController::class,
+      'Application\Controller\Api\Chat' => Controller\Api\ChatTextRestfulController::class,
     ),
   ),
   'view_manager' => array(
