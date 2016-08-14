@@ -15,6 +15,11 @@ class CodeModelTable extends AModelTable
     return $this->getModel($id);
   }
 
+  public function getLastCode()
+  {
+    return $this->getLastModel();
+  }
+
   public function getCodeListByRoomId($_room_id)
   {
     $room_id = (int)$_room_id;
@@ -33,7 +38,7 @@ class CodeModelTable extends AModelTable
   public function saveCode(CodeModel $codeModel)
   {
     try{
-      $this->saveModel($codeModel);
+      $this->saveData($codeModel->exchangeToArrayWithoutCreatedAt());
     } catch(Exception $e) {
       return 0;
     }

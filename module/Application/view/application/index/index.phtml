@@ -130,12 +130,19 @@ function succeedSignIn(_user){
 
 
 /* main routine */
-var \$codeRowTmp = \$codeViewDOM.find(".code_row").remove().removeClass("template");
+var \$codeRowTmp = \$codeViewDOM.find(".code_row").remove().removeClass("template"),
+    \$userInputForm = \$("#user_input_form");
 function setMainEvents(){
   log("set Main Events", userId);
 
   setUserInfo2UI();
   getCodesInRoom();
+
+  \$userInputForm.on("submit", function(_e){
+    _e.preventDefault();
+    postCode();
+    return false;
+  });
 }
 
 function setUserInfo2UI(){
@@ -173,6 +180,26 @@ function createCodeRow(_codeStr){
   var \$codeRow = \$codeRowTmp.clone();
   \$codeRow.html("<code class='prettyprint'>" + _codeStr + "</code>");
   return \$codeRow;
+}
+
+function postCode(){
+  var codeText = \$userInputForm.find('#user_input_field > input').val()
+                .replace(/&/g,"&amp;")
+                .replace(/ /g,"&nbsp;")
+                .replace(/"/g,"&quot;")
+                .replace(/'/g,"&#039;")
+                .replace(/</g,"&lt;")
+                .replace(/>/g,"&gt;"),
+      postData = { "code": codeText, "user_id": userId, "room_id": roomId };
+  post({"url": "$api_code", "type": "post", "query": postData,
+    "success": function(_data){
+      log("success post code", _data);
+    },
+    "fail": function(_data){
+      log("fail post code", _data);
+    },
+    "complete": function(_data){ /* nothing to do. */ }
+  });
 }
 /* end main routine */
 

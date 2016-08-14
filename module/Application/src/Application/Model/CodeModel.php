@@ -27,4 +27,14 @@ class CodeModel extends AModel
       'created_at' => $this->created_at,
     );
   }
+
+  public function exchangeToArrayWithoutCreatedAt()
+  {
+    return array(
+      'id' => $this->id,
+      'user_id' => $this->user_id,
+      'room_id' => $this->room_id,
+      'code' => $this->code,
+    );
+  }
 }
