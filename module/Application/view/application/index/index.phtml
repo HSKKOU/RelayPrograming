@@ -35,6 +35,7 @@ $this->inlineScript()->appendScript(
 var \$signUpDOM = \$("#sign_up"),
     \$signUpForm = \$("#sign_up_form"),
     \$codeViewDOM = \$("#code_view"),
+    \$chatViewDOM = \$("#chat_view"),
     userId = -1,
     roomId = \$("#room_id").val(),
     userIdCN = cookieNameUserId(roomId),
@@ -84,6 +85,7 @@ function signUp(){
 
 function succeedSignUp(_user){
   log("user", _user);
+  userId = +_user['id'];
   signIn();
 }
 function failedSignUp(){ alert("Failed to create or sign up."); }
@@ -127,9 +129,11 @@ function succeedSignIn(_user){
 
 /* main routine */
 var \$codeRowTmp = \$codeViewDOM.find(".code_row").remove().removeClass("template"),
+    \$chatRowTmp = \$chatViewDOM.find(".chat_row").remove().removeClass("template"),
     \$userInputForm = \$("#user_input_form"),
     \$userInput = \$("#user_input_field > input"),
-    \$codeViewField = \$("#code_view_field");
+    \$codeViewField = \$("#code_view_field"),
+    \$chatViewField = \$("#chat_view_field");
 function setMainEvents(){
   log("set Main Events", userId);
 
@@ -167,12 +171,13 @@ function setUserInfo2UI(){ \$("#user_ico").css({"background": userColor}).text(u
 function setRecievedCodes(_codes){ for(var i in _codes){ addRecievedCode(_codes[i]); } }
 
 function addRecievedCode(_code){
-  var \$codeRow = createCodeRow(_code['code']);
+  var \$codeRow = createCodeRow(_code);
   \$codeRow.appendTo(\$codeViewField);
   prettyPrint();
 }
-
-function createCodeRow(_codeStr){ return \$codeRowTmp.clone().append(createPrettyCodeHtml(_codeStr)); }
+function createCodeRow(_code){
+  return \$codeRowTmp.clone().append(createPrettyCodeHtml(_code['code']));
+}
 
 function succeedPostCode(_code){
   resetUserInput();
@@ -184,13 +189,21 @@ function succeedPostCode(_code){
 
 
 
+
+
+
 /* chat */
 function setRecievedChatTexts(_ctexts){ for(var i in _ctexts){ addRecievedChatText(_ctexts[i]); } }
 
 function addRecievedChatText(_ctext){
-  log(_ctext);
-  // var \$codeRow = createCodeRow(_ctext['text']);
-  // \$codeRow.appendTo(\$codeViewField);
+  var \$chatRow = createChatRow(_ctext);
+  \$chatRow.appendTo(\$chatViewField);
+}
+function createChatRow(_ctext){
+  var \$chatRow = \$chatRowTmp.clone();
+  \$chatRow.find(".user_ico").css({"background": _ctext['user_color']}).text(_ctext['user_name'])
+  .next(".text").text(_ctext['text']);
+  return \$chatRow;
 }
 
 function succeedPostChatText(_ctext){

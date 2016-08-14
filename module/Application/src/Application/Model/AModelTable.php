@@ -44,7 +44,7 @@ class AModelTable
 
   public function saveModel(AModel $_model)
   {
-    $this->saveData($_model->exchangeToArrayWithoutId());
+    $this->saveData($_model->exchangeToArray());
   }
 
   public function saveData($_data)
