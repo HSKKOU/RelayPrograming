@@ -46,6 +46,7 @@ return array(
               'route'    => '/:controller[/:id][/]',
               'constraints' => array(
                 'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                'id' => '[0-9]+',
               ),
               'defaults' => array(
                 'action' => null,
@@ -82,6 +83,7 @@ return array(
       'Application\Controller\Admin' => Controller\AdminController::class,
 
       'Application\Controller\Api\User' => Controller\Api\UserRestfulController::class,
+      'Application\Controller\Api\Code' => Controller\Api\CodeRestfulController::class,
     ),
   ),
   'view_manager' => array(

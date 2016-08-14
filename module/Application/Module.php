@@ -7,6 +7,9 @@ use Zend\Mvc\MvcEvent;
 use Application\Model\UserModel;
 use Application\Model\UserModelTable;
 
+use Application\Model\CodeModel;
+use Application\Model\CodeModelTable;
+
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\TableGateway\TableGateway;
 
@@ -48,6 +51,18 @@ class Module
           $resultSetPrototype = new ResultSet();
           $resultSetPrototype->setArrayObjectPrototype(new UserModel());
           return new TableGateway('users', $dbAdapter, null, $resultSetPrototype);
+        },
+
+        'Application\Model\CodeModelTable' => function($sm){
+          $tableGateway = $sm->get('CodeModelTableGateway');
+          $table = new CodeModelTable($tableGateway);
+          return $table;
+        },
+        'CodeModelTableGateway' => function($sm){
+          $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+          $resultSetPrototype = new ResultSet();
+          $resultSetPrototype->setArrayObjectPrototype(new CodeModel());
+          return new TableGateway('codes', $dbAdapter, null, $resultSetPrototype);
         },
       ),
     );

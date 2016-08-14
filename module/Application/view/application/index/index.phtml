@@ -25,6 +25,7 @@
 
 <?php
 $api_user = $this->url('api/default', array('controller' => 'user'));
+$api_code = $this->url('api/default', array('controller' => 'code'));
 
 $this->inlineScript()->appendScript(
 <<<__END__
@@ -133,10 +134,24 @@ function setMainEvents(){
   log("set Main Events", userId);
 
   setUserInfo2UI();
+  getCodesInRoom();
 }
 
 function setUserInfo2UI(){
   \$("#user_ico").css({"background": userColor}).text(userName);
+}
+
+function getCodesInRoom(){
+  var postData = { "room_id": roomId };
+  post({"url": "$api_code", "type": "get", "query": postData,
+    "success": function(_data){
+      log("data", _data);
+    },
+    "fail": function(_data){
+      log("data", _data);
+    },
+    "complete": function(_data){ /* nothing to do. */ }
+  });
 }
 /* end main routine */
 

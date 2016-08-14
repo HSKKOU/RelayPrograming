@@ -24,7 +24,7 @@ class AModelTable
     $rowSet = $this->tableGateway->select(array('id' => $id));
     $row = $rowSet->current();
     if(!$row) {
-      throw new \Exception("Could not find $id");
+      return array();
     }
 
     return $row;
