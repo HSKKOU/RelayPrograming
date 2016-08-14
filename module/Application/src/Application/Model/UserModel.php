@@ -10,7 +10,7 @@ class UserModel extends AModel
   public function exchangeArray($data)
   {
     $this->id = (isset($data['id']))? +$data['id']:0;
-    $this->name = (isset($data['name']))? $data['name']:"User None";
+    $this->name = (isset($data['name']))? $data['name']:"No Name";
     $this->color = (isset($data['color']))? $data['color']:"";
     $this->room_id = (isset($data['room_id']))? +$data['room_id']:0;
   }
