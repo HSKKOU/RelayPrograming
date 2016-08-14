@@ -22,7 +22,7 @@
 }
 
 /* bootstrap.css, pretty.css */
-code{display: block;overflow: hidden;width: 100%;word-wrap: break-word;white-space: normal;background: transparent;font-size: 16px;}
+code{display: block;padding: 0;overflow: hidden;width: 100%;word-wrap: break-word;white-space: normal;background: transparent;}
 
 
 /* layout.phtml */
@@ -51,7 +51,7 @@ div.container {position: relative;padding: 20px;}
 /* code view */
 #code_view{background: #fbb;}
   #code_view_field{padding: 10px;}
-    #code_view_field > .code_row{width: 100%;}
+    #code_view_field > .code_row{width: 100%;min-height: 22px;line-height: 22px;font-size: 18px;}
 
 /* chat view */
 #chat_view{right: 120px;width: 300px;background: #bfb;}
