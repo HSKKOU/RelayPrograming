@@ -156,8 +156,11 @@ function getCodesInRoom(){
 }
 
 function setRecievedCodes(_codes){
+  var \$codeView = \$("#code_view");
   for(var i in _codes){
-    log("code", _codes[i]);
+    var code = _codes[i],
+        \$codeRow = \$codeRowTmp.clone();
+    \$codeRow.text(code['code']).appendTo(\$codeView);
   }
 }
 
