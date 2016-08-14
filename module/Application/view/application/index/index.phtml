@@ -131,10 +131,13 @@ function succeedSignIn(_user){
 
 /* main routine */
 var \$codeRowTmp = \$codeViewDOM.find(".code_row").remove().removeClass("template"),
-    \$userInputForm = \$("#user_input_form");
+    \$userInputForm = \$("#user_input_form"),
+    \$userInput = \$("#user_input_field > input"),
+    \$codeViewField = \$("#code_view_field");
 function setMainEvents(){
   log("set Main Events", userId);
 
+  resetUserInput();
   setUserInfo2UI();
   getCodesInRoom();
 
@@ -143,6 +146,10 @@ function setMainEvents(){
     postCode();
     return false;
   });
+}
+
+function resetUserInput(){
+  \$userInput.val("");
 }
 
 function setUserInfo2UI(){
@@ -163,17 +170,15 @@ function getCodesInRoom(){
 }
 
 function setRecievedCodes(_codes){
-  var \$codeViewField = \$("#code_view_field");
   for(var i in _codes){
-    var code = _codes[i];
-    var \$codeRow = createCodeRow(code['code']);
-    \$codeRow.appendTo(\$codeViewField);
+    addRecievedCode(_codes[i]);
   }
-  prettyPrint();
 }
 
 function addRecievedCode(_code){
-
+  var \$codeRow = createCodeRow(_code['code']);
+  \$codeRow.appendTo(\$codeViewField);
+  prettyPrint();
 }
 
 function createCodeRow(_codeStr){
@@ -194,12 +199,19 @@ function postCode(){
   post({"url": "$api_code", "type": "post", "query": postData,
     "success": function(_data){
       log("success post code", _data);
+      succeedPostCode(_data['data']);
     },
     "fail": function(_data){
       log("fail post code", _data);
+      alert("Failed post code");
     },
     "complete": function(_data){ /* nothing to do. */ }
   });
+}
+
+function succeedPostCode(_code){
+  resetUserInput();
+  addRecievedCode(_code);
 }
 /* end main routine */
 
