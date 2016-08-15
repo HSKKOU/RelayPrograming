@@ -38,7 +38,16 @@ $this->inlineScript()->appendScript(
 var \$signUpDOM = \$("#sign_up"),
     \$signUpForm = \$("#sign_up_form"),
     \$codeViewDOM = \$("#code_view"),
-    \$chatViewDOM = \$("#chat_view");
+    \$codeRowTmp = \$codeViewDOM.find(".code_row").remove().removeClass("template"),
+    \$codeViewField = \$("#code_view_field"),
+    \$chatViewDOM = \$("#chat_view"),
+    \$chatRowTmp = \$chatViewDOM.find(".chat_row").remove().removeClass("template"),
+    \$chatViewField = \$("#chat_view_field"),
+    \$membersView = \$("#members_view_field"),
+    \$memberRowTmp = \$membersView.find(".member_row").remove().removeClass("template"),
+    \$userInputForm = \$("#user_input_form"),
+    \$userInput = \$("#user_input_field > input"),
+    initWaiter;
 /* end declare members */
 
 
@@ -46,6 +55,8 @@ var \$signUpDOM = \$("#sign_up"),
 (function main(){
   initApis();
   initUserInfo();
+  // invalidateUserInput();
+  \$("#user_input_field > input").prop('disabled', true);
   if($.cookie(userIdCN) > 0){
     userId = $.cookie(userIdCN);
     signIn();
@@ -124,7 +135,6 @@ function failedSignIn(_data){ alert("Failed Sign In."); log(_data); }
 
 
 /* main routine */
-var initWaiter;
 function setMainEvents(){
   resetUserInput();
   setUserInfo2UI();
@@ -147,8 +157,6 @@ function setMainEvents(){
 
 
 /* code */
-var \$codeRowTmp = \$codeViewDOM.find(".code_row").remove().removeClass("template"),
-    \$codeViewField = \$("#code_view_field");
 function setRecievedCodes(_codes){
   if(_codes.length == 0){ return; }
   for(var i in _codes){ addRecievedCode(_codes[i]); }
@@ -160,8 +168,6 @@ function succeedPostCode(_code){ resetUserInput(); }
 
 
 /* chat */
-var \$chatRowTmp = \$chatViewDOM.find(".chat_row").remove().removeClass("template"),
-    \$chatViewField = \$("#chat_view_field");
 function setRecievedChatTexts(_ctexts){
   if(_ctexts.length == 0) { return ;}
   for(var i in _ctexts){ addRecievedChatText(_ctexts[i]); }
@@ -173,8 +179,6 @@ function succeedPostChatText(_ctext){ resetUserInput(); }
 
 
 /* member */
-var \$membersView = \$("#members_view_field"),
-    \$memberRowTmp = \$membersView.find(".member_row").remove().removeClass("template");
 function getMemberStatus(_callback){
   post({"url": api_member+"?room_id="+roomId, "type": "get", "query": {},
     "success": function(_data){ _callback(_data['data']) },
@@ -185,6 +189,7 @@ function getMemberStatus(_callback){
 
 function setMemberStatus(_members){
   log("members", _members);
+  if(userId == _members['turn_user_id']){ validateUserInput(); }
   for(var i in _members['members']){ setMember(_members['members'][i], _members['turn_user_id']); }
 }
 
@@ -201,13 +206,13 @@ function setRecievedMembers(_members){
   log("next turn user id", nextTurnUid);
   \$membersView.find(".member_row.turn").removeClass("turn");
   \$membersView.find(".member_row.uid"+nextTurnUid).addClass("turn");
+  invalidateUserInput();
+  if(userId == nextTurnUid){ validateUserInput(); }
 }
 /* end member */
 
 
 /* user input */
-var \$userInputForm = \$("#user_input_form"),
-    \$userInput = \$("#user_input_field > input");
 function setUserInputEvent(){
   \$userInputForm.on("submit", function(_e){
     _e.preventDefault();
@@ -224,13 +229,8 @@ function setUserInputEvent(){
   });
 }
 
-function validateUserInput(){
-
-}
-
-function invalidateUserInput(){
-
-}
+function validateUserInput(){ \$userInput.prop("disabled", false).focus(); }
+function invalidateUserInput(){ \$userInput.prop("disabled", true); }
 
 function resetUserInput(){ \$userInput.val(""); }
 function setUserInfo2UI(){ \$("#user_ico").css({"background": userColor}).text(userName); }
