@@ -1,3 +1,11 @@
+/* global variable */
+var api_user, api_code, api_chat, api_room, api_member, api_roomst,
+    userId = -1,
+    roomId = -1,
+    userIdCN = "",
+    userName = "",
+    userColor = "#ffffff";
+
 /* simplified log for debug */
 function log(_){ if(true){ console.log.apply(console, arguments); } }
 
@@ -105,6 +113,19 @@ function postTexts(_api, _postData, _successCB){
 
 
 
+/* room */
+var roomVerCN = cookieNameRoomVer(roomId);
+function getRoomVersion(){
+  var rVer = $.cookie(roomVerCN);
+  if(rVer === void 0 || rVer === null){ rVer = "0000-00-00 00:00:00"; }
+  return rVer;
+}
+function storeRoomVersion(_ver){ $.cookie(roomVerCN, _ver, { "expires": 1 }); }
+/* end room */
+
+
+
+
 /* 非同期処理の待機 */
 function Waiter(_callback, _count){
   var callback = _callback, count = _count, success = true;
@@ -121,3 +142,47 @@ function Waiter(_callback, _count){
   };
 }
 /* end 非同期処理の待機 */
+
+
+
+
+/* heart beat */
+var heartBeatSPB = 1.0,
+    canPostGHB = true,
+    recievedCodes, recievedChatTexts;
+function startHeartBeat(){ heartBeat(); }
+
+function postHeartBeat(){
+  if(!canPostGHB){ return; }
+  canPostGHB = false;
+  postGetRoomStatus(api_roomst, succeedPostHeartBeat);
+}
+
+function postGetRoomStatus(_api, _callback){
+  var postData = { "type": "hb", 'room_id': roomId, "ver": getRoomVersion() };
+  post({"url": _api, "type": "post", "query": postData,
+    // "success": function(_data){ setTimeout(function(){_callback(_data['data']);}, 1400); },
+    "success": function(_data){ log("rss", _data); _callback(_data['data']); },
+    "fail": function(_data){ log("rs fail", _data);/* nothing to do. */ },
+    "complete": function(_data){ /* nothing to do. */ }
+  });
+}
+
+function succeedPostHeartBeat(_data){
+  if(_data['updated']){
+    log("rs updated", _data);
+    storeRoomVersion(_data['room_ver']);
+    recievedCodes(_data['codes']);
+    recievedChatTexts(_data['chat']);
+  }
+  canPostGHB = true;
+}
+
+function heartBeat(){
+  log("heart beat");
+  setTimeout(function(){
+    postHeartBeat();
+    heartBeat();
+  }, heartBeatSPB * 1000);
+}
+/* end heart beat */

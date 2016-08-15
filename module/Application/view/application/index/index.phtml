@@ -38,17 +38,14 @@ $this->inlineScript()->appendScript(
 var \$signUpDOM = \$("#sign_up"),
     \$signUpForm = \$("#sign_up_form"),
     \$codeViewDOM = \$("#code_view"),
-    \$chatViewDOM = \$("#chat_view"),
-    userId = -1,
-    roomId = \$("#room_id").val(),
-    userIdCN = cookieNameUserId(roomId),
-    userName = "",
-    userColor = "#ffffff";
+    \$chatViewDOM = \$("#chat_view");
 /* end declare members */
 
 
 /* init */
-(function init(){
+(function main(){
+  initApis();
+  initUserInfo();
   if($.cookie(userIdCN) > 0){
     userId = $.cookie(userIdCN);
     signIn();
@@ -56,6 +53,20 @@ var \$signUpDOM = \$("#sign_up"),
   }
   setLoginEvent();
 })();
+
+function initApis(){
+  api_user = "$api_user";
+  api_code = "$api_code";
+  api_chat = "$api_chat";
+  api_room = "$api_room";
+  api_member = "$api_member";
+  api_roomst = "$api_roomst";
+}
+
+function initUserInfo(){
+  roomId = \$("#room_id").val();
+  userIdCN = cookieNameUserId(roomId);
+}
 /* end init */
 
 
@@ -73,7 +84,7 @@ function signUp(){
       color = \$signUpForm.find('.input_color > input').val();
 
   var postData = { "type": "signUp", "name": name, "color": color, "room_id": roomId };
-  post({"url": "$api_user", "type": "post", "query": postData,
+  post({"url": api_user, "type": "post", "query": postData,
     "success": function(_data){ succeedSignUp(_data['data']); },
     "fail": function(_data){ failedSignUp(); },
     "complete": function(_data){ /* nothing to do. */ }
@@ -88,7 +99,7 @@ function failedSignUp(){ alert("Failed to create or sign up."); }
 
 function signIn(){
   var postData = { "type": "signIn", "user_id": userId, "room_id": roomId };
-  post({"url": "$api_user", "type": "post", "query": postData,
+  post({"url": api_user, "type": "post", "query": postData,
     "success": function(_data){ succeedSignIn(_data['data']); },
     "fail": function(_data){ failedSignIn(_data); },
     "complete": function(_data){ /* nothing to do. */ }
@@ -124,12 +135,16 @@ function setMainEvents(){
   resetUserInput();
   setUserInfo2UI();
 
-  initWaiter = new Waiter(function(){ startHeartBeat(); }, 4);
+  initWaiter = new Waiter(function(){
+    recievedCodes = setRecievedCodes;
+    recievedChatTexts = setRecievedChatTexts;
+    startHeartBeat();
+  }, 4);
 
-  getTextsInRoom("$api_code", roomId, function(_data){ setRecievedCodes(_data); initWaiter.resolve(); });
-  getTextsInRoom("$api_chat", roomId, function(_data){ setRecievedChatTexts(_data); initWaiter.resolve(); });
+  getTextsInRoom(api_code, roomId, function(_data){ setRecievedCodes(_data); initWaiter.resolve(); });
+  getTextsInRoom(api_chat, roomId, function(_data){ setRecievedChatTexts(_data); initWaiter.resolve(); });
   getMemberStatus(function(_data){ setMemberStatus(_data); initWaiter.resolve(); });
-  postGetRoomStatus(function(_data){ storeRoomVersion(_data['room_ver']); initWaiter.resolve(); });
+  postGetRoomStatus(api_roomst, function(_data){ storeRoomVersion(_data['room_ver']); initWaiter.resolve(); });
 
   \$userInputForm.on("submit", function(_e){
     _e.preventDefault();
@@ -137,10 +152,10 @@ function setMainEvents(){
         postData = { "user_id": userId, "room_id": roomId };
     if(isCodeOrChatText(inputText)){
       postData["code"] = encodeSpecialChara(inputText.substr(1));
-      postTexts("$api_code", postData, succeedPostCode);
+      postTexts(api_code, postData, succeedPostCode);
     } else {
       postData["text"] = encodeSpecialChara(inputText);
-      postTexts("$api_chat", postData, succeedPostChatText);
+      postTexts(api_chat, postData, succeedPostChatText);
     }
     return false;
   });
@@ -175,7 +190,7 @@ function succeedPostChatText(_ctext){ resetUserInput(); }
 var \$membersView = \$("#members_view_field"),
     \$memberRowTmp = \$membersView.find(".member_row").remove().removeClass("template");
 function getMemberStatus(_callback){
-  post({"url": "$api_member?room_id="+roomId, "type": "get", "query": {},
+  post({"url": api_member+"?room_id="+roomId, "type": "get", "query": {},
     "success": function(_data){ _callback(_data['data']) },
     "fail": function(_data){ /* nothing to do. */ },
     "complete": function(_data){ /* nothing to do. */ }
@@ -194,58 +209,6 @@ function setMember(_member, _tui){
   \$memberRow.appendTo(\$membersView);
 }
 /* end member */
-
-
-/* room */
-var roomVerCN = cookieNameRoomVer(roomId);
-function getRoomVersion(){
-  var rVer = $.cookie(roomVerCN);
-  if(rVer === void 0 || rVer === null){ rVer = "0000-00-00 00:00:00"; }
-  return rVer;
-}
-function storeRoomVersion(_ver){ $.cookie(roomVerCN, _ver, { "expires": 1 }); }
-/* end room */
-
-
-/* heart beat */
-var heartBeatSPB = 1.0,
-    canPostGHB = true;
-function startHeartBeat(){ heartBeat(); }
-
-function postHeartBeat(){
-  if(!canPostGHB){ return; }
-  canPostGHB = false;
-  postGetRoomStatus(succeedPostHeartBeat);
-}
-
-function postGetRoomStatus(_callback){
-  var postData = { "type": "hb", 'room_id': roomId, "ver": getRoomVersion() };
-  post({"url": "$api_roomst", "type": "post", "query": postData,
-    // "success": function(_data){ setTimeout(function(){_callback(_data['data']);}, 1400); },
-    "success": function(_data){ log("rss", _data); _callback(_data['data']); },
-    "fail": function(_data){ log("rs fail", _data);/* nothing to do. */ },
-    "complete": function(_data){ /* nothing to do. */ }
-  });
-}
-
-function succeedPostHeartBeat(_data){
-  if(_data['updated']){
-    log("rs updated", _data);
-    storeRoomVersion(_data['room_ver']);
-    setRecievedCodes(_data['codes']);
-    setRecievedChatTexts(_data['chat']);
-  }
-  canPostGHB = true;
-}
-
-function heartBeat(){
-  log("heart beat");
-  setTimeout(function(){
-    postHeartBeat();
-    heartBeat();
-  }, heartBeatSPB * 1000);
-}
-/* end heart beat */
 
 __END__
 );
