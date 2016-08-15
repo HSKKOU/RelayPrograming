@@ -43,7 +43,6 @@ class RoomStatusRestfulController extends AbstractApiController
     } else {
       $roomInfo = $this->makeNoUpdatedVerJson($room->modified);
     }
-    // $roomInfo = $this->makeLatestVerJson($room->modified, $room_id);
     return $this->makeSuccessJson($roomInfo);
   }
 

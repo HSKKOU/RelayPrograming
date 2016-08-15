@@ -70,7 +70,7 @@ class AModelTable
     if ($id == 0) {
       $this->tableGateway->insert($_data);
     } else {
-      if ($this->get($id)) {
+      if ($this->getModel($id)) {
         $this->tableGateway->update($_data, array('id' => $id));
       } else {
         throw new \Exception("This Model's id dose not exist");

@@ -4,21 +4,15 @@ namespace Application\Controller\Api;
 use Zend\View\Model\JsonModel;
 
 use Application\Model\UserModel;
+use Application\Model\RoomModel;
 
 class UserRestfulController extends AbstractApiController
 {
   protected $userTable;
+  protected $roomTable;
 
-  public function getUserTable()
-  {
-    if(!$this->userTable)
-    {
-      $sm = $this->getServiceLocator();
-      $this->userTable = $sm->get('Application\Model\UserModelTable');
-    }
-
-    return $this->userTable;
-  }
+  public function getUserTable() { if(!$this->userTable) { $this->userTable = $this->getServiceLocator()->get('Application\Model\UserModelTable'); } return $this->userTable; }
+  public function getRoomTable() { if(!$this->roomTable) { $this->roomTable = $this->getServiceLocator()->get('Application\Model\RoomModelTable'); } return $this->roomTable; }
 
   public function getList()
   {
@@ -66,6 +60,12 @@ class UserRestfulController extends AbstractApiController
     $existUser = $this->getUserTable()->getUser($_user_id);
     if ($existUser->room_id != $_room_id) {
       return $this->makeFailedJson(array());
+    }
+
+    $room = $this->getRoomTable()->getRoom($_room_id);
+    if ($room->turn_user_id == 0) {
+      $room->turn_user_id = $_user_id;
+      $this->getRoomTable()->saveRoom($room);
     }
 
     return $this->makeSuccessJson($existUser);
