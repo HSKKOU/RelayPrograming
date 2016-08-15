@@ -136,10 +136,10 @@ function setMainEvents(){
     var inputText = \$userInputForm.find('#user_input_field > input').val(),
         postData = { "user_id": userId, "room_id": roomId };
     if(isCodeOrChatText(inputText)){
-      postData["code"] = replaceSpecialChara(inputText.substr(1));
+      postData["code"] = encodeSpecialChara(inputText.substr(1));
       postTexts("$api_code", postData, succeedPostCode);
     } else {
-      postData["text"] = replaceSpecialChara(inputText);
+      postData["text"] = encodeSpecialChara(inputText);
       postTexts("$api_chat", postData, succeedPostChatText);
     }
     return false;

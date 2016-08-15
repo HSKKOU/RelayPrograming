@@ -29,13 +29,21 @@ function post(_opt){
 }
 
 /* escape special character */
-function replaceSpecialChara(_str){
+function encodeSpecialChara(_str){
   return _str.replace(/&/g,"&amp;")
              .replace(/ /g,"&nbsp;")
              .replace(/"/g,"&quot;")
              .replace(/'/g,"&#039;")
              .replace(/</g,"&lt;")
              .replace(/>/g,"&gt;");
+}
+function decodeSpecialChara(_str){
+  return _str.replace(/&amp;/g,"&")
+             .replace(/&nbsp;/g," ")
+             .replace(/&quot;/g,'"')
+             .replace(/&#039;/g,"'")
+             .replace(/&lt;/g,"<")
+             .replace(/&gt;/g,">");
 }
 
 /* syntax highlight */
@@ -58,7 +66,9 @@ function cookieNameRoomVer(_room_id){ return createRoomCookieName(_room_id, "Ver
 /* code and chat */
 function createCodeRow(_code, $_tmp){ return $_tmp.append(createPrettyCodeHtml(_code['code'])); }
 function createChatRow(_ctext, $_tmp){
-  $_tmp.find(".user_ico").css({"background": _ctext['user_color']}).text(_ctext['user_name']).next(".text").text(_ctext['text']);
+  $_tmp
+  .find(".user_ico").css({"background": _ctext['user_color']}).text(decodeSpecialChara(_ctext['user_name']))
+  .next(".text").text(decodeSpecialChara(_ctext['text']));
   return $_tmp;
 }
 
