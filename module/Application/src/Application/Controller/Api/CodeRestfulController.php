@@ -4,21 +4,15 @@ namespace Application\Controller\Api;
 use Zend\View\Model\JsonModel;
 
 use Application\Model\CodeModel;
+use Application\Model\RoomModel;
 
 class CodeRestfulController extends AbstractApiController
 {
   protected $codeTable;
+  protected $roomTable;
 
-  public function getCodeTable()
-  {
-    if(!$this->codeTable)
-    {
-      $sm = $this->getServiceLocator();
-      $this->codeTable = $sm->get('Application\Model\CodeModelTable');
-    }
-
-    return $this->codeTable;
-  }
+  public function getCodeTable() { if(!$this->codeTable) { $this->codeTable = $this->getServiceLocator()->get('Application\Model\CodeModelTable'); } return $this->codeTable; }
+  public function getRoomTable() { if(!$this->roomTable) { $this->roomTable = $this->getServiceLocator()->get('Application\Model\RoomModelTable'); } return $this->roomTable; }
 
   public function getList()
   {
@@ -44,6 +38,7 @@ class CodeRestfulController extends AbstractApiController
     $result = $this->getCodeTable()->saveCode($codeModel);
     if ($result == 1) {
       $savedData = $this->getCodeTable()->getLastCode();
+      $this->getRoomTable()->updateRoomVer($savedData->room_id, $savedData->created_at);
       return $this->makeSuccessJson($savedData);
     }
 

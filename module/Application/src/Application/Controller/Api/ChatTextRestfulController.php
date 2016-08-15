@@ -9,18 +9,12 @@ use Application\Model\UserModel;
 class ChatTextRestfulController extends AbstractApiController
 {
   protected $chatTextTable;
-  protected $userTextTable;
+  protected $userTable;
+  protected $roomTable;
 
-  public function getChatTextTable()
-  {
-    if(!$this->chatTextTable) { $this->chatTextTable = $this->getServiceLocator()->get('Application\Model\ChatTextModelTable'); }
-    return $this->chatTextTable;
-  }
-  public function getUserTextTable()
-  {
-    if(!$this->userTextTable) { $this->userTextTable = $this->getServiceLocator()->get('Application\Model\UserModelTable'); }
-    return $this->userTextTable;
-  }
+  public function getChatTextTable() { if(!$this->chatTextTable) { $this->chatTextTable = $this->getServiceLocator()->get('Application\Model\ChatTextModelTable'); } return $this->chatTextTable; }
+  public function getUserTable() { if(!$this->userTable) { $this->userTable = $this->getServiceLocator()->get('Application\Model\UserModelTable'); } return $this->userTable; }
+  public function getRoomTable() { if(!$this->roomTable) { $this->roomTable = $this->getServiceLocator()->get('Application\Model\RoomModelTable'); } return $this->roomTable; }
 
   public function getList()
   {
@@ -29,8 +23,7 @@ class ChatTextRestfulController extends AbstractApiController
       $room_id = $_GET['room_id'];
     }
 
-    $adapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
-    $sql = new \Zend\Db\Sql\Sql($adapter);
+    $sql = $this->getSql();
     $select = $sql->select();
     $select->from('chat_texts')
            ->join('users', 'chat_texts.user_id = users.id', array('name', 'color'), $select::JOIN_LEFT)
@@ -67,10 +60,11 @@ class ChatTextRestfulController extends AbstractApiController
     $result = $this->getChatTextTable()->saveChatText($chatTextModel);
     if ($result == 1) {
       $savedData = $this->getChatTextTable()->getLastChatText();
-      $userModel = $this->getUserTextTable()->getUser($savedData->user_id);
+      $userModel = $this->getUserTable()->getUser($savedData->user_id);
       $cTextData = $savedData->exchangeToArray();
       $cTextData['user_name'] = $userModel->name;
       $cTextData['user_color'] = $userModel->color;
+      $this->getRoomTable()->updateRoomVer($savedData->room_id, $savedData->created_at);
       return $this->makeSuccessJson($cTextData);
     }
 

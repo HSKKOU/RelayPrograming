@@ -20,6 +20,14 @@ class RoomModelTable extends AModelTable
     return $this->getLastModel();
   }
 
+  public function updateRoomVer($_room_id, $_ver)
+  {
+    $room = $this->getRoom($_room_id);
+    $room->modified = $_ver;
+    $this->saveRoom($room);
+    return $this->getRoom($_room_id);
+  }
+
   public function saveRoom(RoomModel $roomModel)
   {
     try{

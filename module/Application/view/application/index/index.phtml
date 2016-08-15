@@ -152,16 +152,22 @@ function setUserInfo2UI(){ \$("#user_ico").css({"background": userColor}).text(u
 
 
 /* code */
-function setRecievedCodes(_codes){ for(var i in _codes){ addRecievedCode(_codes[i]); } }
+function setRecievedCodes(_codes){
+  if(_codes.length == 0){ return; }
+  for(var i in _codes){ addRecievedCode(_codes[i]); }
+}
 function addRecievedCode(_code){ createCodeRow(_code, \$codeRowTmp.clone()).appendTo(\$codeViewField); prettyPrint(); }
-function succeedPostCode(_code){ resetUserInput(); addRecievedCode(_code); }
+function succeedPostCode(_code){ resetUserInput(); }
 /* end code */
 
 
 /* chat */
-function setRecievedChatTexts(_ctexts){ for(var i in _ctexts){ addRecievedChatText(_ctexts[i]); } }
+function setRecievedChatTexts(_ctexts){
+  if(_ctexts.length == 0) { return ;}
+  for(var i in _ctexts){ addRecievedChatText(_ctexts[i]); }
+}
 function addRecievedChatText(_ctext){ createChatRow(_ctext, \$chatRowTmp.clone()).appendTo(\$chatViewField); }
-function succeedPostChatText(_ctext){ resetUserInput(); addRecievedChatText(_ctext); }
+function succeedPostChatText(_ctext){ resetUserInput(); }
 /* end chat */
 
 
@@ -215,15 +221,19 @@ function postHeartBeat(){
 function postGetRoomStatus(_callback){
   var postData = { "type": "hb", 'room_id': roomId, "ver": getRoomVersion() };
   post({"url": "$api_roomst", "type": "post", "query": postData,
-    "success": function(_data){ log("rss", _data);_callback(_data['data']); },
-    "fail": function(_data){ log("rsf", _data);/* nothing to do. */ },
+    // "success": function(_data){ setTimeout(function(){_callback(_data['data']);}, 1400); },
+    "success": function(_data){ log("rss", _data); _callback(_data['data']); },
+    "fail": function(_data){ log("rs fail", _data);/* nothing to do. */ },
     "complete": function(_data){ /* nothing to do. */ }
   });
 }
 
 function succeedPostHeartBeat(_data){
   if(_data['updated']){
+    log("rs updated", _data);
     storeRoomVersion(_data['room_ver']);
+    setRecievedCodes(_data['codes']);
+    setRecievedChatTexts(_data['chat']);
   }
   canPostGHB = true;
 }

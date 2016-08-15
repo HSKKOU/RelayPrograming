@@ -36,30 +36,57 @@ class RoomStatusRestfulController extends AbstractApiController
   private function heartBeat($_data)
   {
     $room_id = $_data['room_id'];
+    $localVer = $_data['ver'];
     $room = $this->getRoomTable()->getRoom($room_id);
     $roomInfo = array();
-    if (strtotime($room->modified) > strtotime($_data['ver'])) {
-      $roomInfo = $this->makeLatestVerJson($room->modified, $room_id);
+    if (strtotime($room->modified) > strtotime($localVer)) {
+      $roomInfo = $this->makeLatestVerJson($localVer, $room->modified, $room_id);
     } else {
-      $roomInfo = $this->makeNoUpdatedVerJson($room->modified);
+      $roomInfo = $this->makeNoUpdatedVerJson($localVer);
     }
     return $this->makeSuccessJson($roomInfo);
   }
 
-  private function makeLatestVerJson($_ver, $_room_id)
+  private function makeLatestVerJson($_local_ver, $_server_ver, $_room_id)
   {
     return array(
       'updated' => true,
-      'room_ver' => $_ver,
-      'codes' => $this->getCodeTable()->getUpdatedCodesList($_ver, $_room_id),
-      'chat' => $this->getChatTextTable()->getUpdatedCTextsList($_ver, $_room_id),
-      'members' => $this->getUpdatedMembers($_ver, $_room_id),
+      'room_ver' => $_server_ver,
+      'codes' => $this->getCodeTable()->getUpdatedCodesList($_local_ver, $_room_id),
+      'chat' => $this->getUpdatedCTexts($_local_ver, $_room_id),
+      'members' => $this->getUpdatedMembers($_local_ver, $_room_id),
     );
   }
 
-  private function getUpdatedMembers($_ver, $_room_id)
+  private function getUpdatedCTexts($_local_ver, $_room_id)
   {
-    $uMembers = $this->getUserTable()->getUpdatedMembersList($_ver, $_room_id);
+    $sql = $this->getSql();
+    $select = $sql->select();
+    $select->from('chat_texts')
+           ->join('users', 'chat_texts.user_id = users.id', array('name', 'color'), $select::JOIN_LEFT)
+           ->where->equalTo('chat_texts.room_id', $_room_id)
+                  ->greaterThan('chat_texts.created_at', $_local_ver);
+    $statement = $sql->prepareStatementForSqlObject($select);
+    $resultSet = $statement->execute();
+
+    $chatTexts = array();
+    foreach ($resultSet as $row) {
+      $chatTexts[] = array(
+        'id' => $row['id'],
+        'room_id' => $row['room_id'],
+        'user_id' => $row['user_id'],
+        'user_name' => $row['name'],
+        'user_color' => $row['color'],
+        'text' => $row['text'],
+      );
+    }
+
+    return $chatTexts;
+  }
+
+  private function getUpdatedMembers($_local_ver, $_room_id)
+  {
+    $uMembers = $this->getUserTable()->getUpdatedMembersList($_local_ver, $_room_id);
     $room = $this->getRoomTable()->getRoom($_room_id);
     return array(
       "members" => $uMembers,
@@ -67,11 +94,11 @@ class RoomStatusRestfulController extends AbstractApiController
     );
   }
 
-  private function makeNoUpdatedVerJson($_ver)
+  private function makeNoUpdatedVerJson($_server_ver)
   {
     return array(
       'updated' => false,
-      'room_ver' => $_ver,
+      'room_ver' => $_server_ver,
     );
   }
 }

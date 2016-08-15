@@ -30,4 +30,10 @@ class AbstractApiController extends AbstractRestfulController
       'data' => $_data,
     ));
   }
+
+  protected function getSql()
+  {
+    $adapter = $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter');
+    return new \Zend\Db\Sql\Sql($adapter);
+  }
 }
