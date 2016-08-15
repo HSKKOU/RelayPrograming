@@ -170,6 +170,7 @@ function setUserInfo2UI(){ \$("#user_ico").css({"background": userColor}).text(u
 function setRecievedCodes(_codes){
   if(_codes.length == 0){ return; }
   for(var i in _codes){ addRecievedCode(_codes[i]); }
+  \$codeViewField.animate({"scrollTop": \$(\$codeViewField)[0].scrollHeight}, 'fast');
 }
 function addRecievedCode(_code){ createCodeRow(_code, \$codeRowTmp.clone()).appendTo(\$codeViewField); prettyPrint(); }
 function succeedPostCode(_code){ resetUserInput(); }
@@ -180,6 +181,7 @@ function succeedPostCode(_code){ resetUserInput(); }
 function setRecievedChatTexts(_ctexts){
   if(_ctexts.length == 0) { return ;}
   for(var i in _ctexts){ addRecievedChatText(_ctexts[i]); }
+  \$chatViewField.animate({"scrollTop": \$(\$chatViewField)[0].scrollHeight}, 'fast');
 }
 function addRecievedChatText(_ctext){ createChatRow(_ctext, \$chatRowTmp.clone()).appendTo(\$chatViewField); }
 function succeedPostChatText(_ctext){ resetUserInput(); }
