@@ -138,6 +138,7 @@ function setMainEvents(){
   initWaiter = new Waiter(function(){
     recievedCodes = setRecievedCodes;
     recievedChatTexts = setRecievedChatTexts;
+    recievedMembers = setRecievedMembers;
     startHeartBeat();
   }, 4);
 
@@ -206,9 +207,17 @@ function setMemberStatus(_members){
 
 function setMember(_member, _tui){
   var \$memberRow = \$memberRowTmp.clone();
-  \$memberRow.css({"background": _member['color']}).text(_member['name']);
+  \$memberRow.css({"background": _member['color']}).text(_member['name'])
+  .addClass("uid"+_member['id']).attr("data-uid", _member['id']);
   if(_member['id'] == _tui){ \$memberRow.addClass("turn"); }
   \$memberRow.appendTo(\$membersView);
+}
+
+function setRecievedMembers(_members){
+  var nextTurnUid = _members['turn_uid'];
+  log("next turn user id", nextTurnUid);
+  \$membersView.find(".member_row.turn").removeClass("turn");
+  \$membersView.find(".member_row.uid"+nextTurnUid).addClass("turn");
 }
 /* end member */
 

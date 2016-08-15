@@ -149,7 +149,7 @@ function Waiter(_callback, _count){
 /* heart beat */
 var heartBeatSPB = 1.0,
     canPostGHB = true,
-    recievedCodes, recievedChatTexts;
+    recievedCodes, recievedChatTexts, recievedMembers;
 function startHeartBeat(){ heartBeat(); }
 
 function postHeartBeat(){
@@ -174,6 +174,7 @@ function succeedPostHeartBeat(_data){
     storeRoomVersion(_data['room_ver']);
     recievedCodes(_data['codes']);
     recievedChatTexts(_data['chat']);
+    recievedMembers(_data['members']);
   }
   canPostGHB = true;
 }
