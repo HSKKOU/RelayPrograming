@@ -38,6 +38,22 @@ class UserModelTable extends AModelTable
     return $this->getLastModel();
   }
 
+  public function getNextTurnUserInRoom($_room_id, $_currentTurnUid)
+  {
+    $select = $this->tableGateway->getSql()->select();
+    $select->where->equalTo('room_id', $_room_id)
+                  ->greaterThan('id', $_currentTurnUid);
+    $select->limit(1);
+    $nextUser = $this->tableGateway->selectWith($select)->current();
+    if ($nextUser) { return $nextUser; }
+
+    $select = $this->tableGateway->getSql()->select();
+    $select->where->equalTo('room_id', $_room_id);
+    $select->limit(1);
+    $nextUser = $this->tableGateway->selectWith($select)->current();
+    return $nextUser;
+  }
+
   public function saveUser(UserModel $userModel)
   {
     try{

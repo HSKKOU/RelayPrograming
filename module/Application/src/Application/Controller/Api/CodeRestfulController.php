@@ -5,14 +5,17 @@ use Zend\View\Model\JsonModel;
 
 use Application\Model\CodeModel;
 use Application\Model\RoomModel;
+use Application\Model\UserModel;
 
 class CodeRestfulController extends AbstractApiController
 {
   protected $codeTable;
   protected $roomTable;
+  protected $userTable;
 
   public function getCodeTable() { if(!$this->codeTable) { $this->codeTable = $this->getServiceLocator()->get('Application\Model\CodeModelTable'); } return $this->codeTable; }
   public function getRoomTable() { if(!$this->roomTable) { $this->roomTable = $this->getServiceLocator()->get('Application\Model\RoomModelTable'); } return $this->roomTable; }
+  public function getUserTable() { if(!$this->userTable) { $this->userTable = $this->getServiceLocator()->get('Application\Model\UserModelTable'); } return $this->userTable; }
 
   public function getList()
   {
@@ -39,10 +42,20 @@ class CodeRestfulController extends AbstractApiController
     if ($result == 1) {
       $savedData = $this->getCodeTable()->getLastCode();
       $this->getRoomTable()->updateRoomVer($savedData->room_id, $savedData->created_at);
+      $this->changeTurnUser($savedData->room_id);
       return $this->makeSuccessJson($savedData);
     }
 
     return $this->makeFailedJson(array());
+  }
+  private function changeTurnUser($_room_id)
+  {
+    $room = $this->getRoomTable()->getRoom($_room_id);
+    $currentTurnUid = $room->turn_user_id;
+    if ($currentTurnUid == 0) { return; }
+
+    $nextUser = $this->getUserTable()->getNextTurnUserInRoom($_room_id, $currentTurnUid);
+    $this->getRoomTable()->updateRoomTurnUid($_room_id, $nextUser->id);
   }
 
 

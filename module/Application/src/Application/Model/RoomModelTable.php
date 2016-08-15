@@ -28,6 +28,14 @@ class RoomModelTable extends AModelTable
     return $this->getRoom($_room_id);
   }
 
+  public function updateRoomTurnUid($_room_id, $_uid)
+  {
+    $room = $this->getRoom($_room_id);
+    $room->turn_user_id = $_uid;
+    $this->saveRoom($room);
+    return $this->getRoom($_room_id);
+  }
+
   public function saveRoom(RoomModel $roomModel)
   {
     try{
