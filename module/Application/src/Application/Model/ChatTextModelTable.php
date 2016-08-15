@@ -35,6 +35,11 @@ class ChatTextModelTable extends AModelTable
     return $chatTexts;
   }
 
+  public function getUpdatedCTextsList($_ver, $_room_id)
+  {
+    return $this->getUpdatedModelList($_ver, 'created_at', $_room_id, 'room_id');
+  }
+
   public function saveChatText(ChatTextModel $chatTextModel)
   {
     try{

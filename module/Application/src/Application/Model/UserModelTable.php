@@ -28,6 +28,11 @@ class UserModelTable extends AModelTable
     return $users;
   }
 
+  public function getUpdatedMembersList($_ver, $_room_id)
+  {
+    return $this->getUpdatedModelList($_ver, 'created_at', $_room_id, 'room_id');
+  }
+
   public function getLastUser()
   {
     return $this->getLastModel();

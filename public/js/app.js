@@ -50,6 +50,7 @@ function createRoomCookieName(_room_id, _column){
   return "RPRoom" + roomId + _column;
 }
 function cookieNameUserId(_room_id){ return createRoomCookieName(_room_id, "Uid"); }
+function cookieNameRoomVer(_room_id){ return createRoomCookieName(_room_id, "Ver"); }
 /* end Cookie */
 
 
@@ -90,3 +91,23 @@ function postTexts(_api, _postData, _successCB){
   });
 }
 /* end code and chat */
+
+
+
+
+/* 非同期処理の待機 */
+function Waiter(_callback, _count){
+  var callback = _callback, count = _count, success = true;
+  this["resolve"] = function(){
+    if(--count == 0){callback(success);};
+  };
+  this["reject"] = function(){
+    success = false;
+    if(--count == 0){callback(false);}
+  };
+  this["finish"] = function(){
+    if(count > 0){callback(success);}
+    count = 0;
+  };
+}
+/* end 非同期処理の待機 */

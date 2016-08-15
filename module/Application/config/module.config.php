@@ -87,6 +87,7 @@ return array(
       'Application\Controller\Api\Chat'    => Controller\Api\ChatTextRestfulController::class,
       'Application\Controller\Api\Room'    => Controller\Api\RoomRestfulController::class,
       'Application\Controller\Api\Member'  => Controller\Api\MemberRestfulController::class,
+      'Application\Controller\Api\Roomst'  => Controller\Api\RoomStatusRestfulController::class,
     ),
   ),
   'view_manager' => array(

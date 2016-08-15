@@ -29,6 +29,7 @@ $api_code = $this->url('api/default', array('controller' => 'code'));
 $api_chat = $this->url('api/default', array('controller' => 'chat'));
 $api_room = $this->url('api/default', array('controller' => 'room'));
 $api_member = $this->url('api/default', array('controller' => 'member'));
+$api_roomst = $this->url('api/default', array('controller' => 'roomst'));
 
 $this->inlineScript()->appendScript(
 <<<__END__
@@ -117,14 +118,18 @@ var \$codeRowTmp = \$codeViewDOM.find(".code_row").remove().removeClass("templat
     \$userInputForm = \$("#user_input_form"),
     \$userInput = \$("#user_input_field > input"),
     \$codeViewField = \$("#code_view_field"),
-    \$chatViewField = \$("#chat_view_field");
+    \$chatViewField = \$("#chat_view_field"),
+    initWaiter;
 function setMainEvents(){
   resetUserInput();
   setUserInfo2UI();
 
-  getTextsInRoom("$api_code", roomId, setRecievedCodes);
-  getTextsInRoom("$api_chat", roomId, setRecievedChatTexts);
-  getMemberStatus();
+  initWaiter = new Waiter(function(){ startHeartBeat(); }, 4);
+
+  getTextsInRoom("$api_code", roomId, function(_data){ setRecievedCodes(_data); initWaiter.resolve(); });
+  getTextsInRoom("$api_chat", roomId, function(_data){ setRecievedChatTexts(_data); initWaiter.resolve(); });
+  getMemberStatus(function(_data){ setMemberStatus(_data); initWaiter.resolve(); });
+  postGetRoomStatus(function(_data){ storeRoomVersion(_data['room_ver']); initWaiter.resolve(); });
 
   \$userInputForm.on("submit", function(_e){
     _e.preventDefault();
@@ -139,8 +144,6 @@ function setMainEvents(){
     }
     return false;
   });
-
-  startHeartBeat();
 }
 
 function resetUserInput(){ \$userInput.val(""); }
@@ -165,9 +168,9 @@ function succeedPostChatText(_ctext){ resetUserInput(); addRecievedChatText(_cte
 /* member */
 var \$membersView = \$("#members_view_field"),
     \$memberRowTmp = \$membersView.find(".member_row").remove().removeClass("template");
-function getMemberStatus(){
+function getMemberStatus(_callback){
   post({"url": "$api_member?room_id="+roomId, "type": "get", "query": {},
-    "success": function(_data){ setMemberStatus(_data['data']) },
+    "success": function(_data){ _callback(_data['data']) },
     "fail": function(_data){ /* nothing to do. */ },
     "complete": function(_data){ /* nothing to do. */ }
   });
@@ -187,19 +190,42 @@ function setMember(_member, _tui){
 /* end member */
 
 
+/* room */
+var roomVerCN = cookieNameRoomVer(roomId);
+function getRoomVersion(){
+  var rVer = $.cookie(roomVerCN);
+  if(rVer === void 0 || rVer === null){ rVer = "0000-00-00 00:00:00"; }
+  return rVer;
+}
+function storeRoomVersion(_ver){ $.cookie(roomVerCN, _ver, { "expires": 1 }); }
+/* end room */
+
+
 /* heart beat */
 var heartBeatSPB = 1.0,
-    canPostHB = true;
-function startHeartBeat(){
-  postHeartBeat();
-  heartBeat();
-}
+    canPostGHB = true;
+function startHeartBeat(){ heartBeat(); }
 
 function postHeartBeat(){
-  if(!canPostHB){ return; }
-  canPostHB = false;
-  log("post");
-  setTimeout(function(){ canPostHB = true; }, 1400);
+  if(!canPostGHB){ return; }
+  canPostGHB = false;
+  postGetRoomStatus(succeedPostHeartBeat);
+}
+
+function postGetRoomStatus(_callback){
+  var postData = { "type": "hb", 'room_id': roomId, "ver": getRoomVersion() };
+  post({"url": "$api_roomst", "type": "post", "query": postData,
+    "success": function(_data){ log("rss", _data);_callback(_data['data']); },
+    "fail": function(_data){ log("rsf", _data);/* nothing to do. */ },
+    "complete": function(_data){ /* nothing to do. */ }
+  });
+}
+
+function succeedPostHeartBeat(_data){
+  if(_data['updated']){
+    storeRoomVersion(_data['room_ver']);
+  }
+  canPostGHB = true;
 }
 
 function heartBeat(){

@@ -42,6 +42,22 @@ class AModelTable
     return $row;
   }
 
+  public function getUpdatedModelList($_ver, $_ver_c, $_room_id, $_room_id_c)
+  {
+    $room_id = (int)$_room_id;
+    $select = $this->tableGateway->getSql()->select();
+    $select->where->equalTo($_room_id_c, $_room_id)
+                  ->greaterThan($_ver_c, $_ver);
+    $rowSet = $this->tableGateway->selectWith($select);
+    $models = array();
+    foreach ($rowSet as $row) {
+      if(!$row){ continue; }
+      $models[] = $row->exchangeToArray();
+    }
+
+    return $models;
+  }
+
   public function saveModel(AModel $_model)
   {
     $this->saveData($_model->exchangeToArray());
