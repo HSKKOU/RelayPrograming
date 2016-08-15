@@ -124,13 +124,7 @@ function failedSignIn(_data){ alert("Failed Sign In."); log(_data); }
 
 
 /* main routine */
-var \$codeRowTmp = \$codeViewDOM.find(".code_row").remove().removeClass("template"),
-    \$chatRowTmp = \$chatViewDOM.find(".chat_row").remove().removeClass("template"),
-    \$userInputForm = \$("#user_input_form"),
-    \$userInput = \$("#user_input_field > input"),
-    \$codeViewField = \$("#code_view_field"),
-    \$chatViewField = \$("#chat_view_field"),
-    initWaiter;
+var initWaiter;
 function setMainEvents(){
   resetUserInput();
   setUserInfo2UI();
@@ -142,32 +136,19 @@ function setMainEvents(){
     startHeartBeat();
   }, 4);
 
+  setUserInputEvent();
+
   getTextsInRoom(api_code, roomId, function(_data){ setRecievedCodes(_data); initWaiter.resolve(); });
   getTextsInRoom(api_chat, roomId, function(_data){ setRecievedChatTexts(_data); initWaiter.resolve(); });
   getMemberStatus(function(_data){ setMemberStatus(_data); initWaiter.resolve(); });
   postGetRoomStatus(api_roomst, function(_data){ storeRoomVersion(_data['room_ver']); initWaiter.resolve(); });
-
-  \$userInputForm.on("submit", function(_e){
-    _e.preventDefault();
-    var inputText = \$userInputForm.find('#user_input_field > input').val(),
-        postData = { "user_id": userId, "room_id": roomId };
-    if(isCodeOrChatText(inputText)){
-      postData["code"] = encodeSpecialChara(inputText.substr(1));
-      postTexts(api_code, postData, succeedPostCode);
-    } else {
-      postData["text"] = encodeSpecialChara(inputText);
-      postTexts(api_chat, postData, succeedPostChatText);
-    }
-    return false;
-  });
 }
-
-function resetUserInput(){ \$userInput.val(""); }
-function setUserInfo2UI(){ \$("#user_ico").css({"background": userColor}).text(userName); }
 /* end main routine */
 
 
 /* code */
+var \$codeRowTmp = \$codeViewDOM.find(".code_row").remove().removeClass("template"),
+    \$codeViewField = \$("#code_view_field");
 function setRecievedCodes(_codes){
   if(_codes.length == 0){ return; }
   for(var i in _codes){ addRecievedCode(_codes[i]); }
@@ -179,6 +160,8 @@ function succeedPostCode(_code){ resetUserInput(); }
 
 
 /* chat */
+var \$chatRowTmp = \$chatViewDOM.find(".chat_row").remove().removeClass("template"),
+    \$chatViewField = \$("#chat_view_field");
 function setRecievedChatTexts(_ctexts){
   if(_ctexts.length == 0) { return ;}
   for(var i in _ctexts){ addRecievedChatText(_ctexts[i]); }
@@ -220,6 +203,38 @@ function setRecievedMembers(_members){
   \$membersView.find(".member_row.uid"+nextTurnUid).addClass("turn");
 }
 /* end member */
+
+
+/* user input */
+var \$userInputForm = \$("#user_input_form"),
+    \$userInput = \$("#user_input_field > input");
+function setUserInputEvent(){
+  \$userInputForm.on("submit", function(_e){
+    _e.preventDefault();
+    var inputText = \$userInputForm.find('#user_input_field > input').val(),
+        postData = { "user_id": userId, "room_id": roomId };
+    if(isCodeOrChatText(inputText)){
+      postData["code"] = encodeSpecialChara(inputText.substr(1));
+      postTexts(api_code, postData, succeedPostCode);
+    } else {
+      postData["text"] = encodeSpecialChara(inputText);
+      postTexts(api_chat, postData, succeedPostChatText);
+    }
+    return false;
+  });
+}
+
+function validateUserInput(){
+
+}
+
+function invalidateUserInput(){
+
+}
+
+function resetUserInput(){ \$userInput.val(""); }
+function setUserInfo2UI(){ \$("#user_ico").css({"background": userColor}).text(userName); }
+/* end user input */
 
 __END__
 );
