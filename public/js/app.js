@@ -162,7 +162,7 @@ function postGetRoomStatus(_api, _callback){
   var postData = { "type": "hb", 'room_id': roomId, "ver": getRoomVersion() };
   post({"url": _api, "type": "post", "query": postData,
     // "success": function(_data){ setTimeout(function(){_callback(_data['data']);}, 1400); },
-    "success": function(_data){ log("rss", _data); _callback(_data['data']); },
+    "success": function(_data){ _callback(_data['data']); },
     "fail": function(_data){ log("rs fail", _data);/* nothing to do. */ },
     "complete": function(_data){ /* nothing to do. */ }
   });
@@ -180,7 +180,6 @@ function succeedPostHeartBeat(_data){
 }
 
 function heartBeat(){
-  log("heart beat");
   setTimeout(function(){
     postHeartBeat();
     heartBeat();

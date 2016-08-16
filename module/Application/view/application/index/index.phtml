@@ -188,7 +188,6 @@ function getMemberStatus(_callback){
 }
 
 function setMemberStatus(_members){
-  log("members", _members);
   for(var i in _members['members']){ setMember(_members['members'][i], _members['turn_user_id']); }
   updateMemberTurn(_members['turn_user_id']);
   if(userId == _members['turn_user_id']){ validateUserInput(); }
@@ -203,9 +202,7 @@ function setMember(_member, _tui){
 }
 
 function updateMemberTurn(_turnUid){
-  log("next turn user id", _turnUid);
   \$membersView.find(".member_row.turn").removeClass("turn");
-  log(_turnUid);
   \$membersView.find(".member_row.uid"+_turnUid).addClass("turn");
   invalidateUserInput();
   if(userId == _turnUid){ validateUserInput(); }
