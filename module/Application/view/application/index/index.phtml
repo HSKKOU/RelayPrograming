@@ -142,7 +142,7 @@ function setMainEvents(){
   initWaiter = new Waiter(function(){
     recievedCodes = setRecievedCodes;
     recievedChatTexts = setRecievedChatTexts;
-    recievedMembers = setRecievedMembers;
+    recievedMembers = setMemberStatus;
     startHeartBeat();
   }, 4);
 
@@ -189,8 +189,9 @@ function getMemberStatus(_callback){
 
 function setMemberStatus(_members){
   log("members", _members);
-  if(userId == _members['turn_user_id']){ validateUserInput(); }
   for(var i in _members['members']){ setMember(_members['members'][i], _members['turn_user_id']); }
+  updateMemberTurn(_members['turn_user_id']);
+  if(userId == _members['turn_user_id']){ validateUserInput(); }
 }
 
 function setMember(_member, _tui){
@@ -201,13 +202,13 @@ function setMember(_member, _tui){
   \$memberRow.appendTo(\$membersView);
 }
 
-function setRecievedMembers(_members){
-  var nextTurnUid = _members['turn_uid'];
-  log("next turn user id", nextTurnUid);
+function updateMemberTurn(_turnUid){
+  log("next turn user id", _turnUid);
   \$membersView.find(".member_row.turn").removeClass("turn");
-  \$membersView.find(".member_row.uid"+nextTurnUid).addClass("turn");
+  log(_turnUid);
+  \$membersView.find(".member_row.uid"+_turnUid).addClass("turn");
   invalidateUserInput();
-  if(userId == nextTurnUid){ validateUserInput(); }
+  if(userId == _turnUid){ validateUserInput(); }
 }
 /* end member */
 

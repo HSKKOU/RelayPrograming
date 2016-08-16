@@ -90,7 +90,7 @@ class RoomStatusRestfulController extends AbstractApiController
     $room = $this->getRoomTable()->getRoom($_room_id);
     return array(
       "members" => $uMembers,
-      "turn_uid" => $room->turn_user_id,
+      "turn_user_id" => $room->turn_user_id,
     );
   }
 

@@ -68,6 +68,8 @@ class UserRestfulController extends AbstractApiController
       $this->getRoomTable()->saveRoom($room);
     }
 
+    $this->getRoomTable()->updateRoomVer($_room_id, date("Y-m-d H:i:s", time()));
+
     return $this->makeSuccessJson($existUser);
   }
 
