@@ -11,7 +11,12 @@
           <input type="text" maxlength="8" name="name" class="br" />
         </div>
         <div class="input_color">
-          <input type="color" value="#ffffff" name="color" />
+          <input type="color" value="#999999" name="color" list="color-list" />
+          <datalist id="color-list">
+            <option value="#999999"></option>
+            <option value="#DDD2AA"></option>
+            <option value="#FFE3D5"></option>
+          </datalist>
         </div>
         <div class="join_button">
           <input id="join" class="button br" type="submit" value="JOIN" />
