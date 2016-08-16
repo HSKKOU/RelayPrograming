@@ -47,7 +47,7 @@ var \$signUpDOM = \$("#sign_up"),
     \$memberRowTmp = \$membersView.find(".member_row").remove().removeClass("template"),
     \$userInputForm = \$("#user_input_form"),
     \$userInput = \$("#user_input_field > input"),
-    initWaiter;
+    initWaiter, canPostCode = false;
 /* end declare members */
 
 
@@ -55,8 +55,7 @@ var \$signUpDOM = \$("#sign_up"),
 (function main(){
   initApis();
   initUserInfo();
-  // invalidateUserInput();
-  \$("#user_input_field > input").prop('disabled', true);
+  invalidatePostCode();
   if($.cookie(userIdCN) > 0){
     userId = $.cookie(userIdCN);
     signIn();
@@ -190,7 +189,7 @@ function getMemberStatus(_callback){
 function setMemberStatus(_members){
   for(var i in _members['members']){ setMember(_members['members'][i], _members['turn_user_id']); }
   updateMemberTurn(_members['turn_user_id']);
-  if(userId == _members['turn_user_id']){ validateUserInput(); }
+  if(userId == _members['turn_user_id']){ validatePostCode(); }
 }
 
 function setMember(_member, _tui){
@@ -204,8 +203,8 @@ function setMember(_member, _tui){
 function updateMemberTurn(_turnUid){
   \$membersView.find(".member_row.turn").removeClass("turn");
   \$membersView.find(".member_row.uid"+_turnUid).addClass("turn");
-  invalidateUserInput();
-  if(userId == _turnUid){ validateUserInput(); }
+  invalidatePostCode();
+  if(userId == _turnUid){ validatePostCode(); }
 }
 /* end member */
 
@@ -217,6 +216,7 @@ function setUserInputEvent(){
     var inputText = \$userInputForm.find('#user_input_field > input').val(),
         postData = { "user_id": userId, "room_id": roomId };
     if(isCodeOrChatText(inputText)){
+      if(!canPostCode){ alert("Current Turn is not you."); return; }
       postData["code"] = encodeSpecialChara(inputText.substr(1));
       postTexts(api_code, postData, succeedPostCode);
     } else {
@@ -227,8 +227,8 @@ function setUserInputEvent(){
   });
 }
 
-function validateUserInput(){ \$userInput.prop("disabled", false).focus(); }
-function invalidateUserInput(){ \$userInput.prop("disabled", true); }
+function validatePostCode(){ canPostCode = true; }
+function invalidatePostCode(){ canPostCode = false; }
 
 function resetUserInput(){ \$userInput.val(""); }
 function setUserInfo2UI(){ \$("#user_ico").css({"background": userColor}).text(userName); }
