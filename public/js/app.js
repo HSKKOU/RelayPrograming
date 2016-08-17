@@ -120,7 +120,7 @@ function getRoomVersion(){
   if(rVer === void 0 || rVer === null){ rVer = "0000-00-00 00:00:00"; }
   return rVer;
 }
-function storeRoomVersion(_ver){ $.cookie(roomVerCN, _ver, { "expires": 1 }); }
+function storeRoomVersion(_ver){ $.cookie(roomVerCN, _ver, { "path": "/", "expires": 1 }); }
 /* end room */
 
 
