@@ -114,13 +114,13 @@ function postTexts(_api, _postData, _successCB){
 
 
 /* room */
-var roomVerCN = cookieNameRoomVer(roomId);
+var roomVerCN = "";
 function getRoomVersion(){
   var rVer = $.cookie(roomVerCN);
   if(rVer === void 0 || rVer === null){ rVer = "0000-00-00 00:00:00"; }
   return rVer;
 }
-function storeRoomVersion(_ver){ $.cookie(roomVerCN, _ver, { "expires": 1 }); }
+function storeRoomVersion(_ver){ log("store", roomVerCN, _ver); $.cookie(roomVerCN, _ver, { "expires": 1 }); }
 /* end room */
 
 
