@@ -72,7 +72,6 @@ function cookieNameRoomVer(_room_id){ return createRoomCookieName(_room_id, "Ver
 
 
 /* code and chat */
-function createCodeRow(_code, $_tmp){ return $_tmp.append(createPrettyCodeHtml(_code['code'])); }
 function createChatRow(_ctext, $_tmp){
   $_tmp
   .find(".user_ico").css({"background": _ctext['user_color']}).text(decodeSpecialChara(_ctext['user_name']))
@@ -109,6 +108,29 @@ function postTexts(_api, _postData, _successCB){
   });
 }
 /* end code and chat */
+
+
+
+
+/* Code Row Creator */
+function createCodeRowCreator($_tmp){
+  var $codeRowTmp = $_tmp,
+      rowNumber = 0;
+
+  return function(_code){
+    var $codeRow = createCodeRow(_code, $codeRowTmp.clone());
+    rowNumber++;
+    $codeRow.attr("data-num", rowNumber);
+    $codeRow.find(".number").text(rowNumber);
+    return $codeRow;
+  };
+
+  function createCodeRow(_code, $_tmp){
+    $_tmp.find(".code").append(createPrettyCodeHtml(_code['code']));
+    return $_tmp;
+  }
+}
+/* end Code Row Creator */
 
 
 

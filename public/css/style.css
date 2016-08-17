@@ -50,8 +50,9 @@ div.container {position: relative;padding: 20px;}
 
 /* code view */
 #code_view{background: #fbb;}
-  #code_view_field{padding: 10px;}
-    #code_view_field > .code_row{width: 100%;min-height: 22px;line-height: 22px;font-size: 18px;}
+  #code_view_field{padding: 8px;}
+    #code_view_field > .code_row{position: relative;padding: 0 0 0 25px;width: 100%;min-height: 22px;line-height: 22px;font-size: 18px;}
+      #code_view_field > .code_row > .number{position: absolute;left: 0;width: 23px;text-align: rleft;font-size: 13px;}
 
 /* chat view */
 #chat_view{right: 120px;width: 300px;background: #bfb;}

@@ -47,14 +47,14 @@ var \$signUpDOM = \$("#sign_up"),
     \$memberRowTmp = \$membersView.find(".member_row").remove().removeClass("template"),
     \$userInputForm = \$("#user_input_form"),
     \$userInput = \$("#user_input_field > input"),
-    initWaiter, canPostCode = false;
+    initWaiter, canPostCode = false,
+    codeRowCreator;
 /* end declare members */
 
 
 /* init */
 (function main(){
-  initApis();
-  initUserInfo();
+  initialize();
   invalidatePostCode();
   if($.cookie(userIdCN) > 0){
     userId = $.cookie(userIdCN);
@@ -64,6 +64,13 @@ var \$signUpDOM = \$("#sign_up"),
   setLoginEvent();
 })();
 
+function initialize(){
+  initApis();
+  roomId = \$("#room_id").val();
+  userIdCN = cookieNameUserId(roomId);
+  roomVerCN = cookieNameRoomVer(roomId);
+}
+
 function initApis(){
   api_user = "$api_user";
   api_code = "$api_code";
@@ -71,12 +78,6 @@ function initApis(){
   api_room = "$api_room";
   api_member = "$api_member";
   api_roomst = "$api_roomst";
-}
-
-function initUserInfo(){
-  roomId = \$("#room_id").val();
-  userIdCN = cookieNameUserId(roomId);
-  roomVerCN = cookieNameRoomVer(roomId);
 }
 /* end init */
 
@@ -139,6 +140,8 @@ function setMainEvents(){
   resetUserInput();
   setUserInfo2UI();
 
+  codeRowCreator = createCodeRowCreator(\$codeRowTmp);
+
   initWaiter = new Waiter(function(){
     recievedCodes = setRecievedCodes;
     recievedChatTexts = setRecievedChatTexts;
@@ -162,7 +165,10 @@ function setRecievedCodes(_codes){
   for(var i in _codes){ addRecievedCode(_codes[i]); }
   \$codeViewField.animate({"scrollTop": \$(\$codeViewField)[0].scrollHeight}, 'fast');
 }
-function addRecievedCode(_code){ createCodeRow(_code, \$codeRowTmp.clone()).appendTo(\$codeViewField); prettyPrint(); }
+function addRecievedCode(_code){
+  codeRowCreator(_code).appendTo(\$codeViewField);
+  prettyPrint();
+}
 function succeedPostCode(_code){ resetUserInput(); }
 /* end code */
 
