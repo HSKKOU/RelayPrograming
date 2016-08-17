@@ -13,7 +13,9 @@ class WatchController extends AbstractRPController
 
   public function get($room_id)
   {
-    return new ViewModel();
+    return new JsonModel(array(
+      'room_id' => $room_id,
+    ));
   }
 
   public function create($data)

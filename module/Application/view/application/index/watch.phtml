@@ -5,8 +5,132 @@
 
     <!-- area for chat text -->
     <?= $this->chat_view ?>
-  
+
     <!-- area for members -->
     <?= $this->members_view ?>
   </div>
 </div>
+
+<input id="room_id" type="hidden" value="<?= $this->room_id ?>" />
+
+
+
+
+<?php
+$api_user = $this->url('api/default', array('controller' => 'user'));
+$api_code = $this->url('api/default', array('controller' => 'code'));
+$api_chat = $this->url('api/default', array('controller' => 'chat'));
+$api_room = $this->url('api/default', array('controller' => 'room'));
+$api_member = $this->url('api/default', array('controller' => 'member'));
+$api_roomst = $this->url('api/default', array('controller' => 'roomst'));
+
+$this->inlineScript()->appendScript(
+<<<__END__
+
+/* declare members */
+var \$codeViewDOM = \$("#code_view"),
+    \$codeRowTmp = \$codeViewDOM.find(".code_row").remove().removeClass("template"),
+    \$codeViewField = \$("#code_view_field"),
+    \$chatViewDOM = \$("#chat_view"),
+    \$chatRowTmp = \$chatViewDOM.find(".chat_row").remove().removeClass("template"),
+    \$chatViewField = \$("#chat_view_field"),
+    \$membersView = \$("#members_view_field"),
+    \$memberRowTmp = \$membersView.find(".member_row").remove().removeClass("template"),
+    initWaiter;
+/* end declare members */
+
+
+/* init */
+(function main(){
+  initApis();
+  initRoomInfo();
+  setMainEvent();
+})();
+
+function initApis(){
+  api_user = "$api_user";
+  api_code = "$api_code";
+  api_chat = "$api_chat";
+  api_room = "$api_room";
+  api_member = "$api_member";
+  api_roomst = "$api_roomst";
+}
+
+function initRoomInfo(){
+  roomId = \$("#room_id").val();
+}
+/* end init */
+
+
+/* main routine */
+function setMainEvent(){
+  initWaiter = new Waiter(function(){
+    recievedCodes = setRecievedCodes;
+    recievedChatTexts = setRecievedChatTexts;
+    recievedMembers = setMemberStatus;
+    startHeartBeat();
+  }, 4);
+
+  getTextsInRoom(api_code, roomId, function(_data){ setRecievedCodes(_data); initWaiter.resolve(); });
+  getTextsInRoom(api_chat, roomId, function(_data){ setRecievedChatTexts(_data); initWaiter.resolve(); });
+  getMemberStatus(function(_data){ setMemberStatus(_data); initWaiter.resolve(); });
+  postGetRoomStatus(api_roomst, function(_data){ storeRoomVersion(_data['room_ver']); initWaiter.resolve(); });
+}
+/* end main routine */
+
+
+/* code */
+function setRecievedCodes(_codes){
+  if(_codes.length == 0){ return; }
+  for(var i in _codes){ addRecievedCode(_codes[i]); }
+  \$codeViewField.animate({"scrollTop": \$(\$codeViewField)[0].scrollHeight}, 'fast');
+}
+function addRecievedCode(_code){ createCodeRow(_code, \$codeRowTmp.clone()).appendTo(\$codeViewField); prettyPrint(); }
+function succeedPostCode(_code){ /* nothing to do */ }
+/* end code */
+
+
+/* chat */
+function setRecievedChatTexts(_ctexts){
+  if(_ctexts.length == 0) { return ;}
+  for(var i in _ctexts){ addRecievedChatText(_ctexts[i]); }
+  \$chatViewField.animate({"scrollTop": \$(\$chatViewField)[0].scrollHeight}, 'fast');
+}
+function addRecievedChatText(_ctext){ createChatRow(_ctext, \$chatRowTmp.clone()).appendTo(\$chatViewField); }
+function succeedPostChatText(_ctext){ /* nothing to do */ }
+/* end chat */
+
+
+/* member */
+function getMemberStatus(_callback){
+  post({"url": api_member+"?room_id="+roomId, "type": "get", "query": {},
+    "success": function(_data){ _callback(_data['data']) },
+    "fail": function(_data){ /* nothing to do. */ },
+    "complete": function(_data){ /* nothing to do. */ }
+  });
+}
+
+function setMemberStatus(_members){
+  for(var i in _members['members']){ setMember(_members['members'][i], _members['turn_user_id']); }
+  updateMemberTurn(_members['turn_user_id']);
+  if(userId == _members['turn_user_id']){ /* nothing to do */ }
+}
+
+function setMember(_member, _tui){
+  var \$memberRow = \$memberRowTmp.clone();
+  \$memberRow.css({"background": _member['color']}).text(_member['name'])
+  .addClass("uid"+_member['id']).attr("data-uid", _member['id']);
+  if(_member['id'] == _tui){ \$memberRow.addClass("turn"); }
+  \$memberRow.appendTo(\$membersView);
+}
+
+function updateMemberTurn(_turnUid){
+  \$membersView.find(".member_row.turn").removeClass("turn");
+  \$membersView.find(".member_row.uid"+_turnUid).addClass("turn");
+  if(userId == _turnUid){ /* nothing to do */ }
+}
+/* end member */
+
+
+__END__
+);
