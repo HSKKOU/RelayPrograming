@@ -22,7 +22,7 @@ class WatchController extends AbstractRPController
   }
 
 
-  public function watchAction()
+  public function indexAction()
   {
     $viewAliases = array(
       'code_view',

@@ -101,8 +101,8 @@ return array(
 
       // each page
       'application/index/index' => __DIR__ . '/../view/application/index/index.phtml',
-      'application/index/watch' => __DIR__ . '/../view/application/index/watch.phtml',
-      'application/index/admin' => __DIR__ . '/../view/application/index/admin.phtml',
+      'application/watch/index' => __DIR__ . '/../view/application/index/watch.phtml',
+      'application/admin/index' => __DIR__ . '/../view/application/index/admin.phtml',
 
       // error page
       'error/404'               => __DIR__ . '/../view/error/404.phtml',
