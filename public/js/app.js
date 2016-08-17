@@ -129,7 +129,7 @@ function createCodeRowCreator($_tmp){
   this['createNextRow'] = function(){
     $nextCodeRow.find(".code").append(createPrettyCodeHtml(""));
   }
-  
+
   this['updateNextRow'] = function(_code){
   }
 
@@ -178,12 +178,18 @@ function Waiter(_callback, _count){
 
 /* heart beat */
 var heartBeatSPB = 1.0,
-    canPostGHB = true,
+    canPostGHB = false, isActiveWindow = false,
     recievedCodes, recievedChatTexts, recievedMembers;
-function startHeartBeat(){ heartBeat(); }
+function startHeartBeat(){
+  $(window).on("focus", function(){ isActiveWindow = true; })
+  .on("blur", function(){ isActiveWindow = false; })
+  .focus();
+  canPostGHB = true;
+  heartBeat();
+}
 
 function postHeartBeat(){
-  if(!canPostGHB){ return; }
+  if(!canPostGHB || !isActiveWindow){ return; }
   canPostGHB = false;
   postGetRoomStatus(api_roomst, succeedPostHeartBeat);
 }
