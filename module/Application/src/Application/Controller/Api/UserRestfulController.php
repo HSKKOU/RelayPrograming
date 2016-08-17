@@ -36,6 +36,8 @@ class UserRestfulController extends AbstractApiController
         if(!isset($data['room_id'])){ return $this->makeFailedJson("no room_id for sign in"); }
         if(!isset($data['user_id'])){ return $this->makeFailedJson("no user id for sign in"); }
         return $this->signIn(+$data['user_id'], +$data['room_id']);
+      case 'signOut':
+        return $this->signOut(+$data['user_id']);
       default:
         break;
     }
@@ -70,6 +72,13 @@ class UserRestfulController extends AbstractApiController
 
     $this->getRoomTable()->updateRoomVer($_room_id, date("Y-m-d H:i:s", time()));
 
+    return $this->makeSuccessJson($existUser);
+  }
+
+  // sign out user
+  private function signOut($_user_id)
+  {
+    $existUser = $this->getUserTable()->signOutUser($_user_id);
     return $this->makeSuccessJson($existUser);
   }
 

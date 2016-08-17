@@ -132,6 +132,22 @@ function succeedSignIn(_user){
   setMainEvents();
 }
 function failedSignIn(_data){ alert("Failed Sign In."); log(_data); }
+
+function signOut(){
+  var postData = { "type": "signOut", "user_id": userId };
+  post({"url": api_user, "type": "post", "query": postData,
+    "success": function(_data){ succeedSignOut(_data['data']); },
+    "fail": function(_data){ failedSignOut(_data['data']); },
+    "complete": function(_data){ /* nothing to do. */ }
+  });
+}
+
+function succeedSignOut(_user){
+  // remove User Info 
+  $.removeCookie(userIdCN);
+  location.reload();
+}
+function failedSignOut(_data){ alert("Failed Sign Out."); log(_data); }
 /* end login */
 
 
