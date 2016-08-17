@@ -180,7 +180,6 @@ function succeedPostHeartBeat(_data){
 }
 
 function heartBeat(){
-  log("heart beat");
   setTimeout(function(){
     postHeartBeat();
     heartBeat();

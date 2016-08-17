@@ -97,7 +97,7 @@ function signUp(){
   var postData = { "type": "signUp", "name": name, "color": color, "room_id": roomId };
   post({"url": api_user, "type": "post", "query": postData,
     "success": function(_data){ succeedSignUp(_data['data']); },
-    "fail": function(_data){ failedSignUp(); },
+    "fail": function(_data){ failedSignUp(_data['data']); },
     "complete": function(_data){ /* nothing to do. */ }
   });
 }
@@ -106,13 +106,13 @@ function succeedSignUp(_user){
   userId = +_user['id'];
   signIn();
 }
-function failedSignUp(){ alert("Failed to create or sign up."); }
+function failedSignUp(_data){ alert("Failed to create or sign up."); log(_data); }
 
 function signIn(){
   var postData = { "type": "signIn", "user_id": userId, "room_id": roomId };
   post({"url": api_user, "type": "post", "query": postData,
     "success": function(_data){ succeedSignIn(_data['data']); },
-    "fail": function(_data){ failedSignIn(_data); },
+    "fail": function(_data){ failedSignIn(_data['data']); },
     "complete": function(_data){ /* nothing to do. */ }
   });
 }
@@ -217,7 +217,7 @@ function setUserInputEvent(){
     var inputText = \$userInputForm.find('#user_input_field > input').val(),
         postData = { "user_id": userId, "room_id": roomId };
     if(isCodeOrChatText(inputText)){
-      if(!canPostCode){ alert("Current Turn is not you."); return; }
+      if(!canPostCode){ alert("It is not your turn."); return; }
       postData["code"] = encodeSpecialChara(inputText.substr(1));
       postTexts(api_code, postData, succeedPostCode);
     } else {
