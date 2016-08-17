@@ -140,7 +140,7 @@ function setMainEvents(){
   resetUserInput();
   setUserInfo2UI();
 
-  codeRowCreator = createCodeRowCreator(\$codeRowTmp);
+  codeRowCreator = new createCodeRowCreator(\$codeRowTmp);
 
   initWaiter = new Waiter(function(){
     recievedCodes = setRecievedCodes;
@@ -166,7 +166,7 @@ function setRecievedCodes(_codes){
   \$codeViewField.animate({"scrollTop": \$(\$codeViewField)[0].scrollHeight}, 'fast');
 }
 function addRecievedCode(_code){
-  codeRowCreator(_code).appendTo(\$codeViewField);
+  codeRowCreator.createCR(_code).appendTo(\$codeViewField);
   prettyPrint();
 }
 function succeedPostCode(_code){ resetUserInput(); }

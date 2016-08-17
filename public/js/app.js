@@ -115,15 +115,23 @@ function postTexts(_api, _postData, _successCB){
 /* Code Row Creator */
 function createCodeRowCreator($_tmp){
   var $codeRowTmp = $_tmp,
+      $nextCodeRow = $_tmp.clone(),
       rowNumber = 0;
 
-  return function(_code){
+  this['createCR'] = function(_code){
     var $codeRow = createCodeRow(_code, $codeRowTmp.clone());
     rowNumber++;
     $codeRow.attr("data-num", rowNumber);
     $codeRow.find(".number").text(rowNumber);
     return $codeRow;
   };
+
+  this['createNextRow'] = function(){
+    $nextCodeRow.find(".code").append(createPrettyCodeHtml(""));
+  }
+  
+  this['updateNextRow'] = function(_code){
+  }
 
   function createCodeRow(_code, $_tmp){
     $_tmp.find(".code").append(createPrettyCodeHtml(_code['code']));
