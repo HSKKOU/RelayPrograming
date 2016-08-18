@@ -47,6 +47,7 @@ var \$signUpDOM = \$("#sign_up"),
     \$memberRowTmp = \$membersView.find(".member_row").remove().removeClass("template"),
     \$userInputForm = \$("#user_input_form"),
     \$userInput = \$("#user_input_field > input"),
+    \$userIco = \$("#user_ico"),
     initWaiter, canPostCode = false,
     codeRowCreator;
 /* end declare members */
@@ -143,7 +144,7 @@ function signOut(){
 }
 
 function succeedSignOut(_user){
-  // remove User Info 
+  // remove User Info
   $.removeCookie(userIdCN);
   location.reload();
 }
@@ -166,11 +167,29 @@ function setMainEvents(){
   }, 4);
 
   setUserInputEvent();
+  setUserInfoLB();
 
   getTextsInRoom(api_code, roomId, function(_data){ setRecievedCodes(_data); initWaiter.resolve(); });
   getTextsInRoom(api_chat, roomId, function(_data){ setRecievedChatTexts(_data); initWaiter.resolve(); });
   getMemberStatus(function(_data){ setMemberStatus(_data); initWaiter.resolve(); });
   postGetRoomStatus(api_roomst, function(_data){ storeRoomVersion(_data['room_ver']); initWaiter.resolve(); });
+}
+
+function setUserInfoLB(){
+  var canClickSignOutBtn = true,
+      isShowLB = false;
+  \$userIco.on("click", function(){trigUserInfoLB()});
+  \$("#signOutBtn").on("click", function(){
+    if(!canClickSignOutBtn){ return; }
+    canClickSignOutBtn = true;
+    signOut();
+  });
+
+  function trigUserInfoLB(){
+    var \$userInfoLb = \$("#user_info_lb");
+    if(isShowLB){ isShowLB = false; \$userInfoLb.hide(); }
+    else{ isShowLB = true; \$userInfoLb.show(); }
+  }
 }
 /* end main routine */
 
@@ -254,7 +273,7 @@ function validatePostCode(){ canPostCode = true; }
 function invalidatePostCode(){ canPostCode = false; }
 
 function resetUserInput(){ \$userInput.val(""); }
-function setUserInfo2UI(){ \$("#user_ico").css({"background": userColor}).text(userName); }
+function setUserInfo2UI(){ \$userIco.css({"background": userColor}).text(userName); }
 /* end user input */
 
 __END__
