@@ -27,7 +27,7 @@ code{display: block;padding: 0;overflow: hidden;width: 100%;word-wrap: break-wor
 
 /* layout.phtml */
 html {}
-body {}
+body {background: #cef5ff;}
 div.container {position: relative;padding: 20px;}
 #app-body{position: relative;}
   #app-body.exist_ui{padding: 0 0 70px;}
@@ -37,8 +37,20 @@ div.container {position: relative;padding: 20px;}
 .wh100{width: 100%;height: 100%;}
 .scroll{overflow-x: hidden;overflow-y: auto;}
 .br{border-radius: 10px;}
-.button{cursor: pointer;-moz-user-select: none;-webkit-user-select: none;-khtml-user-select: none;}
-/*.template{display: none;}*/
+.button{cursor: pointer;-moz-user-select: none;-webkit-user-select: none;-khtml-user-select: none;
+  border-top: 3px solid #888;
+  border-left: 3px solid #888;
+  border-right: 3px solid #333;
+  border-bottom: 3px solid #333;
+}
+input:focus, .button:focus {outline: 0;border-color: orange;}
+.button:active {
+  border-top: 3px solid #333;
+  border-left: 3px solid #333;
+  border-right: 3px solid #888;
+  border-bottom: 3px solid #888;
+}
+.template{display: none;}
 #chat_view, #members_view{position: absolute;top: 0;height: 100%;}
 
 
@@ -47,31 +59,32 @@ div.container {position: relative;padding: 20px;}
 
 /* code chat view */
 #code_chat_view{position: relative;padding: 0 440px 0 0;clear: both;float: left;}
+  #code_chat_view > div{border: 2px solid #333;border-radius: 5px;}
 
 /* code view */
-#code_view{background: #fbb;}
+#code_view{background: #f4eeee;}
   #code_view_field{padding: 8px;}
     #code_view_field > .code_row{position: relative;padding: 0 0 0 25px;width: 100%;min-height: 22px;line-height: 22px;font-size: 18px;}
       #code_view_field > .code_row > .number{position: absolute;left: 0;width: 23px;text-align: rleft;font-size: 13px;}
 
 /* chat view */
-#chat_view{right: 120px;width: 300px;background: #bfb;}
+#chat_view{right: 120px;width: 300px;background: #ddffee;}
   #chat_view_field{padding: 0 10px;width: 100%;height: 100%;}
   .chat_row{position: relative;margin: 10px auto;padding-left: 60px;width: 100%;height: auto;min-height: 30px;}
-    .chat_row > .user_ico{position: absolute;top: 0;left: 0;overflow: hidden;width: 50px;height: 30px;line-height: 30px;background: #ffa;text-align: center;}
+    .chat_row > .user_ico{position: absolute;top: 0;left: 0;border: 2px solid #333;overflow: hidden;width: 50px;height: 30px;line-height: 26px;background: #ffa;text-align: center;}
     .chat_row > .text{padding-top: 6px;width: 100%;height: 100%;line-height: 18px;}
 
 /* members view */
-#members_view{right: 0;width: 100px;background: #bbf;}
-  #members_view_field{padding: 0 10px;width: 100%;height: 100%;}
-    .member_row{position: relative;margin: 10px auto;width: 100%;height: 30px;line-height: 30px;text-align: center;background: #f52;}
-    .member_row.turn{border: 2px solid red;line-height: 26px;}
+#members_view{right: 0;width: 100px;background: #ddffc5;}
+  #members_view_field{padding: 0 6px;width: 100%;height: 100%;}
+    .member_row{position: relative;margin: 10px auto;width: 90%;height: 30px;line-height: 30px;text-align: center;background: #f52;}
+    .member_row.turn{border: 4px solid #333;width: 100%;height: 40px;line-height: 32px;}
 
 /* user input */
 #user_input_form{position: absolute;bottom: 0;left: 0;width: 100%;height: 50px;}
   #user_input_wrapper{position: relative;padding: 0 180px 0 100px;width: 100%;height: 50px;}
     #user_ico_field{position: absolute;top: 0;left: 0;width: 80px;height: 50px;}
-      #user_ico{padding: 10px;width: 100%;height: 50px;line-height: 30px;text-align: center;}
+      #user_ico{padding: 10px;width: 100%;height: 50px;line-height: 22px;text-align: center;}
       #user_info_lb{display: none;position: absolute;left: 10px;bottom: 60px;border: 4px solid #333;padding: 10px 20px;width: 400px;height: 110px;background: #eee;}
         #user_info_lb .wrapper{position: relative;padding: 30px 0 20px;width: 100%;height: 100%;}
         #user_info_lb .header{position: absolute;top: 0;left: 0;font-size: 20px;}
@@ -79,12 +92,12 @@ div.container {position: relative;padding: 20px;}
           #user_info_lb .user_info_row{position: relative;width: 100%;overflow: hidden;}
             #user_info_lb .user_info_row > .title{}
             #user_info_lb .user_info_row > .body{}
-              #signOutBtn{position: absolute;right: 0;bottom: 0;width: 100px;height: 30px;line-height: 30px;background: #33bb66;text-align: center;}
+              #signOutBtn{position: absolute;right: 0;bottom: 0;width: 100px;height: 30px;line-height: 24px;background: #33bb66;text-align: center;}
         #user_info_lb .footer{position: absolute;bottom: 0;left: 0;width: 100%;height: 10px;font-size: 10px;text-align: right;}
     #user_input_field{width: 100%;height: 50px;}
       #user_input_field > input{padding: 10px;width: 100%;height: 50px;background: #dfdfdf;border: 2px solid #aaa;font-size: 20px;}
     #user_input_btnSp{position: absolute;top: 0;right: 0;width: 180px;height: 50px;}
-      #user_input_btnSp > *{float: left;padding: 0;border: 0;height: 50px;line-height: 50px;text-align: center;text-decoration: none;color: #333;}
+      #user_input_btnSp > *{float: left;padding: 0;height: 50px;line-height: 44px;text-align: center;text-decoration: none;color: #333;}
         #submitBtn{margin: 0 0 0 20px;width: 80px;background: #2bb;}
         #runBtn{margin: 0 0 0 20px;width: 60px;background: #b2b;}
 
@@ -103,4 +116,4 @@ div.container {position: relative;padding: 20px;}
       #sign_up_lightbox > .body > .input_color{line-height: 58px;}
         #sign_up_lightbox > .body > .input_color > input{width: 80px;background: #fff;}
       #sign_up_lightbox > .body > .join_button{float: right;}
-        #join{float: right;margin: 4px 0;border: 2px solid #333;width: 50px;height: 50px;line-height: 46px;text-align: center;background: #e45;}
+        #join{float: right;margin: 4px 0;border: 2px solid #333;width: 50px;height: 50px;line-height: 44px;text-align: center;background: #e45;}
