@@ -28,7 +28,9 @@ $this->inlineScript()->appendScript(
 <<<__END__
 
 /* declare members */
-var \$codeViewDOM = \$("#code_view"),
+var \$signUpDOM = \$("#sign_up"),
+    \$signUpForm = \$("#sign_up_form"),
+    \$codeViewDOM = \$("#code_view"),
     \$codeRowTmp = \$codeViewDOM.find(".code_row").remove().removeClass("template"),
     \$codeViewField = \$("#code_view_field"),
     \$chatViewDOM = \$("#chat_view"),
@@ -36,16 +38,26 @@ var \$codeViewDOM = \$("#code_view"),
     \$chatViewField = \$("#chat_view_field"),
     \$membersView = \$("#members_view_field"),
     \$memberRowTmp = \$membersView.find(".member_row").remove().removeClass("template"),
-    initWaiter;
+    \$userInputForm = \$("#user_input_form"),
+    \$userInput = \$("#user_input_field > input"),
+    \$userIco = \$("#user_ico"),
+    initWaiter, canPostCode = false,
+    codeRowCreator;
 /* end declare members */
 
 
 /* init */
 (function main(){
-  initApis();
-  initRoomInfo();
-  setMainEvent();
+  initialize();
 })();
+
+function initialize(){
+  initApis();
+  roomId = \$("#room_id").val();
+  userIdCN = cookieNameUserId(roomId);
+  roomVerCN = cookieNameRoomVer(roomId);
+  setMainEvents();
+}
 
 function initApis(){
   api_user = "$api_user";
@@ -55,16 +67,13 @@ function initApis(){
   api_member = "$api_member";
   api_roomst = "$api_roomst";
 }
-
-function initRoomInfo(){
-  roomId = \$("#room_id").val();
-  roomVerCN = cookieNameRoomVer(roomId);
-}
 /* end init */
 
 
 /* main routine */
-function setMainEvent(){
+function setMainEvents(){
+  codeRowCreator = new createCodeRowCreator(\$codeRowTmp);
+
   initWaiter = new Waiter(function(){
     recievedCodes = setRecievedCodes;
     recievedChatTexts = setRecievedChatTexts;
@@ -86,8 +95,11 @@ function setRecievedCodes(_codes){
   for(var i in _codes){ addRecievedCode(_codes[i]); }
   \$codeViewField.animate({"scrollTop": \$(\$codeViewField)[0].scrollHeight}, 'fast');
 }
-function addRecievedCode(_code){ createCodeRow(_code, \$codeRowTmp.clone()).appendTo(\$codeViewField); prettyPrint(); }
-function succeedPostCode(_code){ /* nothing to do */ }
+function addRecievedCode(_code){
+  codeRowCreator.createCR(_code).appendTo(\$codeViewField);
+  prettyPrint();
+}
+function succeedPostCode(_code){ resetUserInput(); }
 /* end code */
 
 
@@ -98,7 +110,7 @@ function setRecievedChatTexts(_ctexts){
   \$chatViewField.animate({"scrollTop": \$(\$chatViewField)[0].scrollHeight}, 'fast');
 }
 function addRecievedChatText(_ctext){ createChatRow(_ctext, \$chatRowTmp.clone()).appendTo(\$chatViewField); }
-function succeedPostChatText(_ctext){ /* nothing to do */ }
+function succeedPostChatText(_ctext){ resetUserInput(); }
 /* end chat */
 
 
@@ -114,7 +126,7 @@ function getMemberStatus(_callback){
 function setMemberStatus(_members){
   for(var i in _members['members']){ setMember(_members['members'][i], _members['turn_user_id']); }
   updateMemberTurn(_members['turn_user_id']);
-  if(userId == _members['turn_user_id']){ /* nothing to do */ }
+  if(userId == _members['turn_user_id']){  }
 }
 
 function setMember(_member, _tui){
@@ -128,10 +140,9 @@ function setMember(_member, _tui){
 function updateMemberTurn(_turnUid){
   \$membersView.find(".member_row.turn").removeClass("turn");
   \$membersView.find(".member_row.uid"+_turnUid).addClass("turn");
-  if(userId == _turnUid){ /* nothing to do */ }
+  if(userId == _turnUid){  }
 }
 /* end member */
-
 
 __END__
 );
