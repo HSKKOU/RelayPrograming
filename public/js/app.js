@@ -184,6 +184,7 @@ function startHeartBeat(){
   $(window).on("focus", function(){ isActiveWindow = true; })
   .on("blur", function(){ isActiveWindow = false; })
   .focus();
+  isActiveWindow = true;
   canPostGHB = true;
   heartBeat();
 }
