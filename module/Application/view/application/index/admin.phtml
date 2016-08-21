@@ -1,5 +1,6 @@
 <div id="app-body" class="wh100 exist_ui">
-  <div id="code_chat_view" class="exist_ui">
+
+  <div id="code_chat_view" class="wh100">
     <!-- area for coded text -->
     <?= $this->code_view ?>
 
@@ -10,6 +11,270 @@
     <?= $this->members_view ?>
   </div>
 
-  <!-- Login lightbox -->
-  <?= $this->loginlb ?>
+  <!-- area for user input -->
+  <?= $this->user_input ?>
 </div>
+
+<!-- Login lightbox -->
+<?= $this->loginlb ?>
+
+<input id="room_id" type="hidden" value="<?= $this->room_id ?>" />
+
+
+
+
+<?php
+$api_user = $this->url('api/default', array('controller' => 'user'));
+$api_code = $this->url('api/default', array('controller' => 'code'));
+$api_chat = $this->url('api/default', array('controller' => 'chat'));
+$api_room = $this->url('api/default', array('controller' => 'room'));
+$api_member = $this->url('api/default', array('controller' => 'member'));
+$api_roomst = $this->url('api/default', array('controller' => 'roomst'));
+
+$this->inlineScript()->appendScript(
+<<<__END__
+
+/* declare members */
+var \$signUpDOM = \$("#sign_up"),
+    \$signUpForm = \$("#sign_up_form"),
+    \$codeViewDOM = \$("#code_view"),
+    \$codeRowTmp = \$codeViewDOM.find(".code_row").remove().removeClass("template"),
+    \$codeViewField = \$("#code_view_field"),
+    \$chatViewDOM = \$("#chat_view"),
+    \$chatRowTmp = \$chatViewDOM.find(".chat_row").remove().removeClass("template"),
+    \$chatViewField = \$("#chat_view_field"),
+    \$membersView = \$("#members_view_field"),
+    \$memberRowTmp = \$membersView.find(".member_row").remove().removeClass("template"),
+    \$userInputForm = \$("#user_input_form"),
+    \$userInput = \$("#user_input_field > input"),
+    \$userIco = \$("#user_ico"),
+    initWaiter, canPostCode = false,
+    codeRowCreator;
+/* end declare members */
+
+
+/* init */
+(function main(){
+  initialize();
+  invalidatePostCode();
+  if($.cookie(userIdCN) > 0){
+    userId = $.cookie(userIdCN);
+    signIn();
+    return;
+  }
+  setLoginEvent();
+})();
+
+function initialize(){
+  initApis();
+  roomId = \$("#room_id").val();
+  userIdCN = cookieNameUserId(roomId);
+  roomVerCN = cookieNameRoomVer(roomId);
+}
+
+function initApis(){
+  api_user = "$api_user";
+  api_code = "$api_code";
+  api_chat = "$api_chat";
+  api_room = "$api_room";
+  api_member = "$api_member";
+  api_roomst = "$api_roomst";
+}
+/* end init */
+
+
+/* login */
+function setLoginEvent(){
+  \$signUpForm.on("submit", function(_e){
+    _e.preventDefault();
+    signUp();
+    return false;
+  });
+}
+
+function signUp(){
+  var name = \$signUpForm.find('.input_name > input').val(),
+      color = \$signUpForm.find('.input_color > input').val();
+
+  var postData = { "type": "signUp", "name": name, "color": color, "room_id": roomId };
+  post({"url": api_user, "type": "post", "query": postData,
+    "success": function(_data){ succeedSignUp(_data['data']); },
+    "fail": function(_data){ failedSignUp(_data['data']); },
+    "complete": function(_data){ /* nothing to do. */ }
+  });
+}
+
+function succeedSignUp(_user){
+  userId = +_user['id'];
+  signIn();
+}
+function failedSignUp(_data){ alert("Failed to create or sign up."); log(_data); }
+
+function signIn(){
+  var postData = { "type": "signIn", "user_id": userId, "room_id": roomId };
+  post({"url": api_user, "type": "post", "query": postData,
+    "success": function(_data){ succeedSignIn(_data['data']); },
+    "fail": function(_data){ failedSignIn(_data['data']); },
+    "complete": function(_data){ /* nothing to do. */ }
+  });
+}
+
+function succeedSignIn(_user){
+  /* set User Info */
+  userId = +_user['id'];
+  userName = _user['name'];
+  userColor = _user['color'];
+  $.cookie(userIdCN, userId, { "expires": 1 });
+  /* end set User Info */
+
+  \$signUpForm.off();
+  \$signUpDOM.remove();
+
+  setMainEvents();
+}
+function failedSignIn(_data){ alert("Failed Sign In."); log(_data); }
+
+function signOut(){
+  var postData = { "type": "signOut", "user_id": userId };
+  post({"url": api_user, "type": "post", "query": postData,
+    "success": function(_data){ succeedSignOut(_data['data']); },
+    "fail": function(_data){ failedSignOut(_data['data']); },
+    "complete": function(_data){ /* nothing to do. */ }
+  });
+}
+
+function succeedSignOut(_user){
+  // remove User Info
+  $.removeCookie(userIdCN);
+  location.reload();
+}
+function failedSignOut(_data){ alert("Failed Sign Out."); log(_data); }
+/* end login */
+
+
+/* main routine */
+function setMainEvents(){
+  resetUserInput();
+  setUserInfo2UI();
+
+  codeRowCreator = new createCodeRowCreator(\$codeRowTmp);
+
+  initWaiter = new Waiter(function(){
+    recievedCodes = setRecievedCodes;
+    recievedChatTexts = setRecievedChatTexts;
+    recievedMembers = setMemberStatus;
+    startHeartBeat();
+  }, 4);
+
+  setUserInputEvent();
+  setUserInfoLB();
+
+  getTextsInRoom(api_code, roomId, function(_data){ setRecievedCodes(_data); initWaiter.resolve(); });
+  getTextsInRoom(api_chat, roomId, function(_data){ setRecievedChatTexts(_data); initWaiter.resolve(); });
+  getMemberStatus(function(_data){ setMemberStatus(_data); initWaiter.resolve(); });
+  postGetRoomStatus(api_roomst, function(_data){ storeRoomVersion(_data['room_ver']); initWaiter.resolve(); });
+}
+
+function setUserInfoLB(){
+  var canClickSignOutBtn = true,
+      isShowLB = false;
+  \$userIco.on("click", function(){trigUserInfoLB()});
+  \$("#signOutBtn").on("click", function(){
+    if(!canClickSignOutBtn){ return; }
+    canClickSignOutBtn = true;
+    signOut();
+  });
+
+  function trigUserInfoLB(){
+    var \$userInfoLb = \$("#user_info_lb");
+    if(isShowLB){ isShowLB = false; \$userInfoLb.hide(); }
+    else{ isShowLB = true; \$userInfoLb.show(); }
+  }
+}
+/* end main routine */
+
+
+/* code */
+function setRecievedCodes(_codes){
+  if(_codes.length == 0){ return; }
+  for(var i in _codes){ addRecievedCode(_codes[i]); }
+  \$codeViewField.animate({"scrollTop": \$(\$codeViewField)[0].scrollHeight}, 'fast');
+}
+function addRecievedCode(_code){
+  codeRowCreator.createCR(_code).appendTo(\$codeViewField);
+  prettyPrint();
+}
+function succeedPostCode(_code){ resetUserInput(); }
+/* end code */
+
+
+/* chat */
+function setRecievedChatTexts(_ctexts){
+  if(_ctexts.length == 0) { return ;}
+  for(var i in _ctexts){ addRecievedChatText(_ctexts[i]); }
+  \$chatViewField.animate({"scrollTop": \$(\$chatViewField)[0].scrollHeight}, 'fast');
+}
+function addRecievedChatText(_ctext){ createChatRow(_ctext, \$chatRowTmp.clone()).appendTo(\$chatViewField); }
+function succeedPostChatText(_ctext){ resetUserInput(); }
+/* end chat */
+
+
+/* member */
+function getMemberStatus(_callback){
+  post({"url": api_member+"?room_id="+roomId, "type": "get", "query": {},
+    "success": function(_data){ _callback(_data['data']) },
+    "fail": function(_data){ /* nothing to do. */ },
+    "complete": function(_data){ /* nothing to do. */ }
+  });
+}
+
+function setMemberStatus(_members){
+  for(var i in _members['members']){ setMember(_members['members'][i], _members['turn_user_id']); }
+  updateMemberTurn(_members['turn_user_id']);
+  if(userId == _members['turn_user_id']){ validatePostCode(); }
+}
+
+function setMember(_member, _tui){
+  var \$memberRow = \$memberRowTmp.clone();
+  \$memberRow.css({"background": _member['color']}).text(_member['name'])
+  .addClass("uid"+_member['id']).attr("data-uid", _member['id']);
+  if(_member['id'] == _tui){ \$memberRow.addClass("turn"); }
+  \$memberRow.appendTo(\$membersView);
+}
+
+function updateMemberTurn(_turnUid){
+  \$membersView.find(".member_row.turn").removeClass("turn");
+  \$membersView.find(".member_row.uid"+_turnUid).addClass("turn");
+  invalidatePostCode();
+  if(userId == _turnUid){ validatePostCode(); }
+}
+/* end member */
+
+
+/* user input */
+function setUserInputEvent(){
+  \$userInputForm.on("submit", function(_e){
+    _e.preventDefault();
+    var inputText = \$userInputForm.find('#user_input_field > input').val(),
+        postData = { "user_id": userId, "room_id": roomId };
+    if(isCodeOrChatText(inputText)){
+      if(!canPostCode){ alert("It is not your turn."); return; }
+      postData["code"] = encodeSpecialChara(inputText.substr(1));
+      postTexts(api_code, postData, succeedPostCode);
+    } else {
+      postData["text"] = encodeSpecialChara(inputText);
+      postTexts(api_chat, postData, succeedPostChatText);
+    }
+    return false;
+  });
+}
+
+function validatePostCode(){ canPostCode = true; }
+function invalidatePostCode(){ canPostCode = false; }
+
+function resetUserInput(){ \$userInput.val(""); }
+function setUserInfo2UI(){ \$userIco.css({"background": userColor}).text(userName); }
+/* end user input */
+
+__END__
+);
