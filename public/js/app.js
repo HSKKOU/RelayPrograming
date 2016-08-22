@@ -67,6 +67,10 @@ function createRoomCookieName(_room_id, _column){
 }
 function cookieNameUserId(_room_id){ return createRoomCookieName(_room_id, "Uid"); }
 function cookieNameRoomVer(_room_id){ return createRoomCookieName(_room_id, "Ver"); }
+function resetCookiesInRoom(_room_id){
+  $.removeCookie(cookieNameUserId(_room_id));
+  $.removeCookie(cookieNameRoomVer(_room_id));
+}
 /* end Cookie */
 
 

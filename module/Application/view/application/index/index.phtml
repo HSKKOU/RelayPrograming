@@ -146,11 +146,7 @@ function signOut(){
   });
 }
 
-function succeedSignOut(_user){
-  // remove User Info
-  $.removeCookie(userIdCN);
-  location.reload();
-}
+function succeedSignOut(_user){ resetCookiesInRoom(); location.reload(); }
 function failedSignOut(_data){ alert("Failed Sign Out."); log(_data); }
 /* end login */
 
@@ -234,7 +230,12 @@ function getMemberStatus(_callback){
 function setMemberStatus(_members){
   log("_members", _members);
   \$(".member_row").remove();
-  for(var i in _members['members']){ setMember(_members['members'][i], _members['turn_user_id']); }
+  var isExistMyUid = false;
+  for(var i in _members['members']){
+    setMember(_members['members'][i], _members['turn_user_id']);
+    if(+_members['members'][i]['id'] == userId){ isExistMyUid = true; }
+  }
+  if(!isExistMyUid){ resetCookiesInRoom();location.reload(); }
   updateMemberTurn(_members['turn_user_id']);
   if(userId == _members['turn_user_id']){ validatePostCode(); }
 }
