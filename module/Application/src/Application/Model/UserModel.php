@@ -17,8 +17,8 @@ class UserModel extends AModel
     $this->name = (isset($data['name']))? $data['name']:"";
     $this->color = (isset($data['color']))? $data['color']:"";
     $this->room_id = (isset($data['room_id']))? +$data['room_id']:0;
-    $this->created_at = (isset($data['created_at']))? +$data['created_at']:null;
-    $this->last_hb = (isset($data['last_hb']))? +$data['last_hb']:null;
+    $this->created_at = (isset($data['created_at']))? $data['created_at']:null;
+    $this->last_hb = (isset($data['last_hb']))? $data['last_hb']:null;
   }
 
   public function exchangeToArray()

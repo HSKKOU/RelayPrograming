@@ -106,6 +106,7 @@ function signUp(){
 }
 
 function succeedSignUp(_user){
+  log("signUp", _user);
   userId = +_user['id'];
   signIn();
 }
