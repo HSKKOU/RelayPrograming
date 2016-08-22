@@ -93,4 +93,16 @@ class UserModelTable extends AModelTable
   {
     return $this->deleteModel($id);
   }
+
+
+
+  public function inactivateUsers($_min)
+  {
+    $update = $this->tableGateway->getSql()->update();
+    $update->set(array('is_active' => '0'));
+    $update->where->lessThan('last_hb', date("Y-m-d H:i:s", strtotime('-'.$_min.' min')));
+    $statement = $this->tableGateway->getSql()->prepareStatementForSqlObject($update);
+    $results = $statement->execute();
+    return 1;
+  }
 }
