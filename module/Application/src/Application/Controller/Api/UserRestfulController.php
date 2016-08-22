@@ -47,7 +47,10 @@ class UserRestfulController extends AbstractApiController
   // register User
   private function signUp($_user_model)
   {
-    $result = $this->getUserTable()->saveUser($_user_model);
+    $now = date("Y-m-d H:i:s");
+    $_user_model->created_at = $now;
+    $_user_model->last_hb = $now;
+    $result = $this->getUserTable()->saveData($_user_model->exchangeToArray());
     if ($result == 1) {
       $savedData = $this->getUserTable()->getLastUser();
       return $this->makeSuccessJson($savedData);
