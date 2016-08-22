@@ -146,7 +146,7 @@ function signOut(){
   });
 }
 
-function succeedSignOut(_user){ resetCookiesInRoom(); location.reload(); }
+function succeedSignOut(_user){ resetCookiesInRoom(roomId); location.reload(); }
 function failedSignOut(_data){ alert("Failed Sign Out."); log(_data); }
 /* end login */
 
@@ -235,7 +235,7 @@ function setMemberStatus(_members){
     setMember(_members['members'][i], _members['turn_user_id']);
     if(+_members['members'][i]['id'] == userId){ isExistMyUid = true; }
   }
-  if(!isExistMyUid){ resetCookiesInRoom();location.reload(); }
+  if(!isExistMyUid){ resetCookiesInRoom(roomId); location.reload(); }
   updateMemberTurn(_members['turn_user_id']);
   if(userId == _members['turn_user_id']){ validatePostCode(); }
 }
