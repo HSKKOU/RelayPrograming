@@ -231,6 +231,8 @@ function getMemberStatus(_callback){
 }
 
 function setMemberStatus(_members){
+  log("_members", _members);
+  \$(".member_row").remove();
   for(var i in _members['members']){ setMember(_members['members'][i], _members['turn_user_id']); }
   updateMemberTurn(_members['turn_user_id']);
   if(userId == _members['turn_user_id']){ validatePostCode(); }

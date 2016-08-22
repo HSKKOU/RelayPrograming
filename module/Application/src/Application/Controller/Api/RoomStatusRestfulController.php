@@ -87,7 +87,8 @@ class RoomStatusRestfulController extends AbstractApiController
 
   private function getUpdatedMembers($_local_ver, $_room_id)
   {
-    $uMembers = $this->getUserTable()->getUpdatedMembersList($_local_ver, $_room_id);
+    // $uMembers = $this->getUserTable()->getUpdatedMembersList($_local_ver, $_room_id);
+    $uMembers = $this->getUserTable()->getUsersInRoom($_room_id);
     $room = $this->getRoomTable()->getRoom($_room_id);
     return array(
       "members" => $uMembers,

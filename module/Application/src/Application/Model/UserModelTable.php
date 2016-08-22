@@ -96,13 +96,30 @@ class UserModelTable extends AModelTable
 
 
 
-  public function inactivateUsers($_min)
+  public function inactivateUsers($_min_before)
   {
-    $update = $this->tableGateway->getSql()->update();
+    $now = time();
+    $minBefore = $_min_before;
+    $minBeforeStr = date("Y-m-d H:i:s", $minBefore);
+    $sql = $this->tableGateway->getSql();
+    $select = $sql->select();
+    $select->where->lessThan('last_hb', $minBeforeStr)
+                  ->equalTo('is_active', '1');
+    $selectRes = $this->tableGateway->selectWith($select);
+
+    if (!$selectRes || count($selectRes) == 0) { return array('res' => false); }
+    $updateRoomIds = array();
+    foreach ($selectRes as $k => $r) {
+      $updateRoomIds[] = $r->room_id;
+    }
+
+    $update = $sql->update();
     $update->set(array('is_active' => '0'));
-    $update->where->lessThan('last_hb', date("Y-m-d H:i:s", strtotime('-'.$_min.' min')));
-    $statement = $this->tableGateway->getSql()->prepareStatementForSqlObject($update);
-    $results = $statement->execute();
-    return 1;
+    $update->where->lessThan('last_hb', $minBeforeStr)
+                  ->equalTo('is_active', '1');
+    $statement = $sql->prepareStatementForSqlObject($update);
+    $updateRes = $statement->execute();
+
+    return array('res' => true, 'now' => $now, 'rids' => $updateRoomIds);
   }
 }

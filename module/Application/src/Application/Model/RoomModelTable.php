@@ -28,6 +28,17 @@ class RoomModelTable extends AModelTable
     return $this->getRoom($_room_id);
   }
 
+  public function updateRoomsVer($_room_ids, $_ver)
+  {
+    $sql = $this->tableGateway->getSql();
+    $update = $sql->update();
+    $update->set(array('modified' => date("Y-m-d H:i:s", $_ver)));
+    $update->where->in('id', $_room_ids);
+    $statement = $sql->prepareStatementForSqlObject($update);
+    $updateRes = $statement->execute();
+    return 1;
+  }
+
   public function updateRoomTurnUid($_room_id, $_uid)
   {
     $room = $this->getRoom($_room_id);

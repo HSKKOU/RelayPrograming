@@ -60,7 +60,7 @@ class UserRestfulController extends AbstractApiController
   private function signIn($_user_id, $_room_id)
   {
     $existUser = $this->getUserTable()->getUser($_user_id);
-    if ($existUser->room_id != $_room_id) {
+    if ($existUser->room_id != $_room_id || $existUser->is_active == '0') {
       return $this->makeFailedJson(array());
     }
 
