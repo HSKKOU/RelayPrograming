@@ -79,9 +79,14 @@ class UserModelTable extends AModelTable
   public function updateVer($_user_id, $_ver)
   {
     $user = $this->getUser($_user_id);
-    $user->modified = $_ver;
+    $user->last_hb = $_ver;
     $this->saveUser($user);
     return $this->getUser($_user_id);
+  }
+
+  public function updateLastHB($_user_id)
+  {
+    return $this->updateVer($_user_id, date("Y-m-d H:i:s"));
   }
 
   public function deleteUser($id)

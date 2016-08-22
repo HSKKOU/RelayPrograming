@@ -39,12 +39,12 @@ class RoomStatusRestfulController extends AbstractApiController
     $localVer = $_data['ver'];
     $room = $this->getRoomTable()->getRoom($room_id);
     $roomInfo = array();
-    // var_dump($room->modified);var_dump($localVer);die;
     if (strtotime($room->modified) > strtotime($localVer)) {
       $roomInfo = $this->makeLatestVerJson($localVer, $room->modified, $room_id);
     } else {
       $roomInfo = $this->makeNoUpdatedVerJson($localVer);
     }
+    $this->getUserTable()->updateLastHB($_data['user_id']);
     return $this->makeSuccessJson($roomInfo);
   }
 

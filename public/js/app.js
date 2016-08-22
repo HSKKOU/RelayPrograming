@@ -196,7 +196,7 @@ function postHeartBeat(){
 }
 
 function postGetRoomStatus(_api, _callback){
-  var postData = { "type": "hb", 'room_id': roomId, "ver": getRoomVersion() };
+  var postData = { "type": "hb", 'user_id': userId, 'room_id': roomId, "ver": getRoomVersion() };
   post({"url": _api, "type": "post", "query": postData,
     // "success": function(_data){ setTimeout(function(){_callback(_data['data']);}, 1400); },
     "success": function(_data){ log("rss", _data); _callback(_data['data']); },

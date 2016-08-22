@@ -65,7 +65,6 @@ class ChatTextRestfulController extends AbstractApiController
       $cTextData['user_name'] = $userModel->name;
       $cTextData['user_color'] = $userModel->color;
       $this->getRoomTable()->updateRoomVer($savedData->room_id, $savedData->created_at);
-      $this->getUserTable()->updateVer($userModel->id, $savedData->created_at);
       return $this->makeSuccessJson($cTextData);
     }
 

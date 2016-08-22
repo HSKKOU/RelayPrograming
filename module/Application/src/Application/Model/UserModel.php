@@ -7,7 +7,7 @@ class UserModel extends AModel
   public $name;
   public $color;
   public $room_id;
-  public $modified;
+  public $last_hb;
 
   public function exchangeArray($data)
   {
@@ -16,7 +16,7 @@ class UserModel extends AModel
     $this->name = (isset($data['name']))? $data['name']:"No Name";
     $this->color = (isset($data['color']))? $data['color']:"";
     $this->room_id = (isset($data['room_id']))? +$data['room_id']:0;
-    $this->modified = (isset($data['modified']))? +$data['modified']:"";
+    $this->last_hb = (isset($data['last_hb']))? +$data['last_hb']:"";
   }
 
   public function exchangeToArray()
@@ -27,7 +27,7 @@ class UserModel extends AModel
       'name' => $this->name,
       'color' => $this->color,
       'room_id' => $this->room_id,
-      'modified' => $this->modified,
+      'last_hb' => $this->last_hb,
     );
   }
 }
