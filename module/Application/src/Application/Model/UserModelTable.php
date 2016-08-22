@@ -76,6 +76,14 @@ class UserModelTable extends AModelTable
     return 1;
   }
 
+  public function updateVer($_user_id, $_ver)
+  {
+    $user = $this->getUser($_user_id);
+    $user->modified = $_ver;
+    $this->saveUser($user);
+    return $this->getUser($_user_id);
+  }
+
   public function deleteUser($id)
   {
     return $this->deleteModel($id);

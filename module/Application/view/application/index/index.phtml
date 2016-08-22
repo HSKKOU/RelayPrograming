@@ -57,6 +57,7 @@ var \$signUpDOM = \$("#sign_up"),
 (function main(){
   initialize();
   invalidatePostCode();
+  log($.cookie(userIdCN));
   if($.cookie(userIdCN) > 0){
     userId = $.cookie(userIdCN);
     signIn();
@@ -121,10 +122,11 @@ function signIn(){
 
 function succeedSignIn(_user){
   /* set User Info */
+  log("user", _user);
   userId = +_user['id'];
   userName = _user['name'];
   userColor = _user['color'];
-  $.cookie(userIdCN, userId, { "expires": 1 });
+  $.cookie(userIdCN, userId, { "path": "/", "expires": 1 });
   /* end set User Info */
 
   \$signUpForm.off();
