@@ -15,9 +15,6 @@
   <?= $this->user_input ?>
 </div>
 
-<!-- Login lightbox -->
-<?= $this->loginlb ?>
-
 <input id="room_id" type="hidden" value="<?= $this->room_id ?>" />
 
 
@@ -48,27 +45,19 @@ var \$signUpDOM = \$("#sign_up"),
     \$userInputForm = \$("#user_input_form"),
     \$userInput = \$("#user_input_field > input"),
     \$userIco = \$("#user_ico"),
-    initWaiter, canPostCode = false,
-    codeRowCreator;
+    initWaiter, codeRowCreator;
 /* end declare members */
 
 
 /* init */
 (function main(){
   initialize();
-  invalidatePostCode();
-  if($.cookie(userIdCN) > 0){
-    userId = $.cookie(userIdCN);
-    signIn();
-    return;
-  }
-  setLoginEvent();
+  setMainEvents();
 })();
 
 function initialize(){
   initApis();
   roomId = \$("#room_id").val();
-  userIdCN = cookieNameUserId(roomId);
   roomVerCN = cookieNameRoomVer(roomId);
 }
 
@@ -81,75 +70,6 @@ function initApis(){
   api_roomst = "$api_roomst";
 }
 /* end init */
-
-
-/* login */
-function setLoginEvent(){
-  \$signUpForm.on("submit", function(_e){
-    _e.preventDefault();
-    signUp();
-    return false;
-  });
-}
-
-function signUp(){
-  var name = \$signUpForm.find('.input_name > input').val(),
-      color = \$signUpForm.find('.input_color > input').val();
-
-  var postData = { "type": "signUp", "name": name, "color": color, "room_id": roomId };
-  post({"url": api_user, "type": "post", "query": postData,
-    "success": function(_data){ succeedSignUp(_data['data']); },
-    "fail": function(_data){ failedSignUp(_data['data']); },
-    "complete": function(_data){ /* nothing to do. */ }
-  });
-}
-
-function succeedSignUp(_user){
-  userId = +_user['id'];
-  signIn();
-}
-function failedSignUp(_data){ alert("Failed to create or sign up."); log(_data); }
-
-function signIn(){
-  var postData = { "type": "signIn", "user_id": userId, "room_id": roomId };
-  post({"url": api_user, "type": "post", "query": postData,
-    "success": function(_data){ succeedSignIn(_data['data']); },
-    "fail": function(_data){ failedSignIn(_data['data']); },
-    "complete": function(_data){ /* nothing to do. */ }
-  });
-}
-
-function succeedSignIn(_user){
-  /* set User Info */
-  userId = +_user['id'];
-  userName = _user['name'];
-  userColor = _user['color'];
-  $.cookie(userIdCN, userId, { "expires": 1 });
-  /* end set User Info */
-
-  \$signUpForm.off();
-  \$signUpDOM.remove();
-
-  setMainEvents();
-}
-function failedSignIn(_data){ alert("Failed Sign In."); log(_data); }
-
-function signOut(){
-  var postData = { "type": "signOut", "user_id": userId };
-  post({"url": api_user, "type": "post", "query": postData,
-    "success": function(_data){ succeedSignOut(_data['data']); },
-    "fail": function(_data){ failedSignOut(_data['data']); },
-    "complete": function(_data){ /* nothing to do. */ }
-  });
-}
-
-function succeedSignOut(_user){
-  // remove User Info
-  $.removeCookie(userIdCN);
-  location.reload();
-}
-function failedSignOut(_data){ alert("Failed Sign Out."); log(_data); }
-/* end login */
 
 
 /* main routine */
@@ -167,29 +87,11 @@ function setMainEvents(){
   }, 4);
 
   setUserInputEvent();
-  setUserInfoLB();
 
   getTextsInRoom(api_code, roomId, function(_data){ setRecievedCodes(_data); initWaiter.resolve(); });
   getTextsInRoom(api_chat, roomId, function(_data){ setRecievedChatTexts(_data); initWaiter.resolve(); });
   getMemberStatus(function(_data){ setMemberStatus(_data); initWaiter.resolve(); });
   postGetRoomStatus(api_roomst, function(_data){ storeRoomVersion(_data['room_ver']); initWaiter.resolve(); });
-}
-
-function setUserInfoLB(){
-  var canClickSignOutBtn = true,
-      isShowLB = false;
-  \$userIco.on("click", function(){trigUserInfoLB()});
-  \$("#signOutBtn").on("click", function(){
-    if(!canClickSignOutBtn){ return; }
-    canClickSignOutBtn = true;
-    signOut();
-  });
-
-  function trigUserInfoLB(){
-    var \$userInfoLb = \$("#user_info_lb");
-    if(isShowLB){ isShowLB = false; \$userInfoLb.hide(); }
-    else{ isShowLB = true; \$userInfoLb.show(); }
-  }
 }
 /* end main routine */
 
@@ -229,24 +131,19 @@ function getMemberStatus(_callback){
 }
 
 function setMemberStatus(_members){
-  for(var i in _members['members']){ setMember(_members['members'][i], _members['turn_user_id']); }
+  log("_members", _members);
+  \$(".member_row").remove();
+  for(var i in _members['members']){
+    createMember(_members['members'][i], _members['turn_user_id'], \$memberRowTmp).appendTo(\$membersView);
+  }
   updateMemberTurn(_members['turn_user_id']);
-  if(userId == _members['turn_user_id']){ validatePostCode(); }
-}
-
-function setMember(_member, _tui){
-  var \$memberRow = \$memberRowTmp.clone();
-  \$memberRow.css({"background": _member['color']}).text(_member['name'])
-  .addClass("uid"+_member['id']).attr("data-uid", _member['id']);
-  if(_member['id'] == _tui){ \$memberRow.addClass("turn"); }
-  \$memberRow.appendTo(\$membersView);
+  if(userId == _members['turn_user_id']){ /* nothing to do. */ }
 }
 
 function updateMemberTurn(_turnUid){
   \$membersView.find(".member_row.turn").removeClass("turn");
   \$membersView.find(".member_row.uid"+_turnUid).addClass("turn");
-  invalidatePostCode();
-  if(userId == _turnUid){ validatePostCode(); }
+  if(userId == _turnUid){ /* nothing to do. */ }
 }
 /* end member */
 
@@ -257,23 +154,27 @@ function setUserInputEvent(){
     _e.preventDefault();
     var inputText = \$userInputForm.find('#user_input_field > input').val(),
         postData = { "user_id": userId, "room_id": roomId };
-    if(isCodeOrChatText(inputText)){
-      if(!canPostCode){ alert("It is not your turn."); return; }
-      postData["code"] = encodeSpecialChara(inputText.substr(1));
-      postTexts(api_code, postData, succeedPostCode);
-    } else {
-      postData["text"] = encodeSpecialChara(inputText);
-      postTexts(api_chat, postData, succeedPostChatText);
-    }
+    if(!inputText.match(/^[0-9]+:/)){ log("illegal syntax modified code."); return false; }
+
+    var ipTexts = inputText.split(":"),
+        lineNum = ipTexts[0],
+        code = "";
+    ipTexts.shift();
+    code = ipTexts.join(":");
+    log("line>"+lineNum, "code>"+code);
+
+    // post({"url": api_code, "type": "post", "query": postData,
+    //   "success": function(_data){  },
+    //   "fail": function(_data){ /* nothing to do. */ },
+    //   "complete": function(_data){ /* nothing to do. */ }
+    // });
+
     return false;
   });
 }
 
-function validatePostCode(){ canPostCode = true; }
-function invalidatePostCode(){ canPostCode = false; }
-
 function resetUserInput(){ \$userInput.val(""); }
-function setUserInfo2UI(){ \$userIco.css({"background": userColor}).text(userName); }
+function setUserInfo2UI(){ \$userIco.css({"background": "#333", "color": "#fff"}).text("ADMIN"); }
 /* end user input */
 
 __END__

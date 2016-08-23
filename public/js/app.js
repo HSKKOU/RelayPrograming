@@ -119,14 +119,12 @@ function postTexts(_api, _postData, _successCB){
 /* Code Row Creator */
 function createCodeRowCreator($_tmp){
   var $codeRowTmp = $_tmp,
-      $nextCodeRow = $_tmp.clone(),
-      rowNumber = 0;
+      $nextCodeRow = $_tmp.clone();
 
   this['createCR'] = function(_code){
     var $codeRow = createCodeRow(_code, $codeRowTmp.clone());
-    rowNumber++;
-    $codeRow.attr("data-num", rowNumber);
-    $codeRow.find(".number").text(rowNumber);
+    $codeRow.addClass("code-line-num-" + _code['line_num']);
+    $codeRow.find(".number").text(_code['line_num']);
     return $codeRow;
   };
 
@@ -214,6 +212,7 @@ function postHeartBeat(){
 
 function postGetRoomStatus(_api, _callback){
   var postData = { "type": "hb", 'user_id': userId, 'room_id': roomId, "ver": getRoomVersion() };
+  // log(postData);
   post({"url": _api, "type": "post", "query": postData,
     // "success": function(_data){ setTimeout(function(){_callback(_data['data']);}, 1400); },
     "success": function(_data){ log("rss", _data); _callback(_data['data']); },

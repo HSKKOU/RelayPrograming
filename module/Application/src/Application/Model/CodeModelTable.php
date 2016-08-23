@@ -42,6 +42,10 @@ class CodeModelTable extends AModelTable
 
   public function saveCode(CodeModel $codeModel)
   {
+    $existCodes = $this->getCodeListByRoomId($codeModel->room_id);
+    if (count($existCodes) == 0) { $codeModel->line_num = 1; }
+    else { $codeModel->line_num = $existCodes[count($existCodes)-1]['line_num'] + 1; }
+
     try{
       $this->saveData($codeModel->exchangeToArrayWithoutCreatedAt());
     } catch(Exception $e) {
