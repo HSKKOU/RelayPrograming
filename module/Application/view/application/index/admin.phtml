@@ -99,11 +99,18 @@ function setMainEvents(){
 /* code */
 function setRecievedCodes(_codes){
   if(_codes.length == 0){ return; }
-  for(var i in _codes){ addRecievedCode(_codes[i]); }
+  for(var i in _codes){
+    if(\$codeViewField.find(".code-line-num-"+_codes[i]['line_num'])[0]){ updateCode(_codes[i]); }
+    else{ addRecievedCode(_codes[i]); }
+  }
   \$codeViewField.animate({"scrollTop": \$(\$codeViewField)[0].scrollHeight}, 'fast');
 }
+function updateCode(_code){
+  \$codeViewField.find(".code-line-num-"+_code['line_num']).find(".code").html(createPrettyCodeHtml(_code['code']));
+  prettyPrint();
+}
 function addRecievedCode(_code){
-  codeRowCreator.createCR(_code).appendTo(\$codeViewField);
+  codeRowCreator.createCR(_code).attr("data-cid", _code['id']).appendTo(\$codeViewField);
   prettyPrint();
 }
 function succeedPostCode(_code){ resetUserInput(); }
@@ -153,7 +160,7 @@ function setUserInputEvent(){
   \$userInputForm.on("submit", function(_e){
     _e.preventDefault();
     var inputText = \$userInputForm.find('#user_input_field > input').val(),
-        postData = { "user_id": userId, "room_id": roomId };
+        postData = { "room_id": roomId };
     if(!inputText.match(/^[0-9]+:/)){ log("illegal syntax modified code."); return false; }
 
     var ipTexts = inputText.split(":"),
@@ -163,11 +170,14 @@ function setUserInputEvent(){
     code = ipTexts.join(":");
     log("line>"+lineNum, "code>"+code);
 
-    // post({"url": api_code, "type": "post", "query": postData,
-    //   "success": function(_data){  },
-    //   "fail": function(_data){ /* nothing to do. */ },
-    //   "complete": function(_data){ /* nothing to do. */ }
-    // });
+    var editRowCid = \$codeViewField.find(".code-line-num-"+lineNum).data("cid");
+    postData["code"] = encodeSpecialChara(code);
+
+    post({"url": api_code+editRowCid, "type": "put", "query": postData,
+      "success": function(_data){ resetUserInput(); },
+      "fail": function(_data){ log("f", _data);/* nothing to do. */ },
+      "complete": function(_data){ /* nothing to do. */ }
+    });
 
     return false;
   });

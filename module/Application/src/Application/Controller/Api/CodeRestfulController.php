@@ -37,6 +37,9 @@ class CodeRestfulController extends AbstractApiController
   {
     $codeModel = new CodeModel();
     $codeModel->exchangeArray($data);
+    $nowStr = date("Y-m-d H:i:s");
+    $codeModel->created_at = $nowStr;
+    $codeModel->updated_at = $nowStr;
 
     $result = $this->getCodeTable()->saveCode($codeModel);
     if ($result == 1) {
@@ -58,6 +61,21 @@ class CodeRestfulController extends AbstractApiController
     $this->getRoomTable()->updateRoomTurnUid($_room_id, $nextUser->id);
   }
 
+  public function update($id, $data)
+  {
+    $nowStr = date("Y-m-d H:i:s");
+    try{
+      $existCode = $this->getCodeTable()->getCode($id);
+      $existCode->code = $data['code'];
+      $existCode->updated_at = $nowStr;
+      $this->getCodeTable()->saveModel($existCode);
+    } catch(Exception $e) {
+      return $this->makeFailedJson(array());
+    }
+
+    $this->getRoomTable()->updateRoomVer($data['room_id'], $nowStr);
+    return $this->makeSuccessJson($existCode);
+  }
 
 
 

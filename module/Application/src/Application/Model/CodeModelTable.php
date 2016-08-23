@@ -37,7 +37,7 @@ class CodeModelTable extends AModelTable
 
   public function getUpdatedCodesList($_ver, $_room_id)
   {
-    return $this->getUpdatedModelList($_ver, 'created_at', $_room_id, 'room_id');
+    return $this->getUpdatedModelList($_ver, 'updated_at', $_room_id, 'room_id');
   }
 
   public function saveCode(CodeModel $codeModel)
@@ -47,7 +47,7 @@ class CodeModelTable extends AModelTable
     else { $codeModel->line_num = $existCodes[count($existCodes)-1]['line_num'] + 1; }
 
     try{
-      $this->saveData($codeModel->exchangeToArrayWithoutCreatedAt());
+      $this->saveModel($codeModel);
     } catch(Exception $e) {
       return 0;
     }
