@@ -131,6 +131,7 @@ function getMemberStatus(_callback){
 }
 
 function setMemberStatus(_members){
+  \$(".member_row").remove();
   for(var i in _members['members']){
     createMember(_members['members'][i], _members['turn_user_id'], \$memberRowTmp).appendTo(\$membersView);
   }

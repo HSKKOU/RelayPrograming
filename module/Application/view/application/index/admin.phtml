@@ -138,7 +138,6 @@ function getMemberStatus(_callback){
 }
 
 function setMemberStatus(_members){
-  log("_members", _members);
   \$(".member_row").remove();
   for(var i in _members['members']){
     createMember(_members['members'][i], _members['turn_user_id'], \$memberRowTmp).appendTo(\$membersView);
@@ -168,7 +167,6 @@ function setUserInputEvent(){
         code = "";
     ipTexts.shift();
     code = ipTexts.join(":");
-    log("line>"+lineNum, "code>"+code);
 
     var editRowCid = \$codeViewField.find(".code-line-num-"+lineNum).data("cid");
     postData["code"] = encodeSpecialChara(code);
