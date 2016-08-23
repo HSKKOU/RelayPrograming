@@ -45,13 +45,15 @@ class UserModelTable extends AModelTable
   {
     $select = $this->tableGateway->getSql()->select();
     $select->where->equalTo('room_id', $_room_id)
-                  ->greaterThan('id', $_currentTurnUid);
+                  ->greaterThan('id', $_currentTurnUid)
+                  ->equalTo('is_active', 1);
     $select->limit(1);
     $nextUser = $this->tableGateway->selectWith($select)->current();
     if ($nextUser) { return $nextUser; }
 
     $select = $this->tableGateway->getSql()->select();
-    $select->where->equalTo('room_id', $_room_id);
+    $select->where->equalTo('room_id', $_room_id)
+                  ->equalTo('is_active', 1);
     $select->limit(1);
     $nextUser = $this->tableGateway->selectWith($select)->current();
     return $nextUser;

@@ -18,6 +18,13 @@ class CronApiController extends AbstractApiController
     // inactivate users not sign in recently.
     $inactiveRoomsInfo = $this->getUserTable()->inactivateUsers(strtotime('-1 min'));
     if (!$inactiveRoomsInfo['res']) { return $this->makeSuccessJson("no cron updated"); }
+    foreach ($inactiveRoomsInfo['rids'] as $i => $rid) {
+      $room = $this->getRoomTable()->getRoom($rid);
+      $turnUser = $this->getUserTable()->getUser($room->turn_user_id);
+      if ($turnUser->is_active == "1") { continue; }
+      $nextUser = $this->getUserTable()->getNextTurnUserInRoom($rid, $room->turn_user_id);
+      $this->getRoomTable()->updateRoomTurnUid($rid, $nextUser->id);
+    }
     $this->getRoomTable()->updateRoomsVer($inactiveRoomsInfo['rids'], $inactiveRoomsInfo['now']);
     return $this->makeSuccessJson("cron updated");
   }
