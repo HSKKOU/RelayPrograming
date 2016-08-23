@@ -160,6 +160,19 @@ function storeRoomVersion(_ver){ $.cookie(roomVerCN, _ver, { "path": "/", "expir
 
 
 
+/* member */
+function setMember(_member, _tui, $_memberRowTmp){
+  var $memberRow = $_memberRowTmp.clone();
+  $memberRow.css({"background": _member['color']}).text(_member['name'])
+  .addClass("uid"+_member['id']).attr("data-uid", _member['id']);
+  if(_member['id'] == _tui){ $memberRow.addClass("turn"); }
+  $memberRow.appendTo($membersView);
+}
+/* end member */
+
+
+
+
 /* 非同期処理の待機 */
 function Waiter(_callback, _count){
   var callback = _callback, count = _count, success = true;

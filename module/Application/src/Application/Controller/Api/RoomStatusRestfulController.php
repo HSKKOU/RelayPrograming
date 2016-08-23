@@ -44,7 +44,7 @@ class RoomStatusRestfulController extends AbstractApiController
     } else {
       $roomInfo = $this->makeNoUpdatedVerJson($localVer);
     }
-    $this->getUserTable()->updateLastHB($_data['user_id']);
+    if (isset($_data['user_id']) && +$_data['user_id'] > 0) { $this->getUserTable()->updateLastHB($_data['user_id']); }
     return $this->makeSuccessJson($roomInfo);
   }
 
