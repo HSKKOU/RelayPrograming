@@ -124,23 +124,17 @@ function getMemberStatus(_callback){
 }
 
 function setMemberStatus(_members){
-  for(var i in _members['members']){ setMember(_members['members'][i], _members['turn_user_id']); }
+  for(var i in _members['members']){
+    createMember(_members['members'][i], _members['turn_user_id'], \$memberRowTmp).appendTo(\$membersView);
+  }
   updateMemberTurn(_members['turn_user_id']);
   if(userId == _members['turn_user_id']){  }
-}
-
-function setMember(_member, _tui){
-  var \$memberRow = \$memberRowTmp.clone();
-  \$memberRow.css({"background": _member['color']}).text(_member['name'])
-  .addClass("uid"+_member['id']).attr("data-uid", _member['id']);
-  if(_member['id'] == _tui){ \$memberRow.addClass("turn"); }
-  \$memberRow.appendTo(\$membersView);
 }
 
 function updateMemberTurn(_turnUid){
   \$membersView.find(".member_row.turn").removeClass("turn");
   \$membersView.find(".member_row.uid"+_turnUid).addClass("turn");
-  if(userId == _turnUid){  }
+  if(userId == _turnUid){ /* nothing to do. */ }
 }
 /* end member */
 

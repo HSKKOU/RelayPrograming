@@ -147,6 +147,19 @@ function createCodeRowCreator($_tmp){
 
 
 
+/* member */
+function createMember(_member, _tui, $_memberRowTmp){
+  var $memberRow = $_memberRowTmp.clone();
+  $memberRow.css({"background": _member['color']}).text(_member['name'])
+  .addClass("uid"+_member['id']).attr("data-uid", _member['id']);
+  if(_member['id'] == _tui){ $memberRow.addClass("turn"); }
+  return $memberRow;
+}
+/* end member */
+
+
+
+
 /* room */
 var roomVerCN = "";
 function getRoomVersion(){
