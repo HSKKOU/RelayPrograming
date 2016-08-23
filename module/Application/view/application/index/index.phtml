@@ -232,12 +232,20 @@ function setMemberStatus(_members){
   \$(".member_row").remove();
   var isExistMyUid = false;
   for(var i in _members['members']){
-    setMember(_members['members'][i], _members['turn_user_id'], \$memberRowTmp);
+    setMember(_members['members'][i], _members['turn_user_id']);
     if(+_members['members'][i]['id'] == userId){ isExistMyUid = true; }
   }
   if(!isExistMyUid){ resetCookiesInRoom(roomId); location.reload(); }
   updateMemberTurn(_members['turn_user_id']);
   if(userId == _members['turn_user_id']){ validatePostCode(); }
+}
+
+function setMember(_member, _tui){
+  var \$memberRow = \$memberRowTmp.clone();
+  \$memberRow.css({"background": _member['color']}).text(_member['name'])
+  .addClass("uid"+_member['id']).attr("data-uid", _member['id']);
+  if(_member['id'] == _tui){ \$memberRow.addClass("turn"); }
+  \$memberRow.appendTo(\$membersView);
 }
 
 function updateMemberTurn(_turnUid){
