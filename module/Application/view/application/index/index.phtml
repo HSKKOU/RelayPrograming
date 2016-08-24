@@ -173,7 +173,7 @@ function setMainEvents(){
   getMemberStatus(function(_data){ setMemberStatus(_data); initWaiter.resolve(); });
   postGetRoomStatus(api_roomst, function(_data){ storeRoomVersion(_data['room_ver']); initWaiter.resolve(); });
 
-  \$userInput.attr("placeholder", "先頭に:でcode、:をなしでchatに投稿");
+  \$userInput.attr("placeholder", ":int a = 1;    (':' 無しなら chat に投稿)");
 }
 
 function setUserInfoLB(){
