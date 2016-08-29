@@ -166,7 +166,6 @@ function setMainEvents(){
   }, 4);
 
   setUserInputEvent();
-  setUserInfoLB();
 
   getTextsInRoom(api_code, roomId, function(_data){ setRecievedCodes(_data); initWaiter.resolve(); });
   getTextsInRoom(api_chat, roomId, function(_data){ setRecievedChatTexts(_data); initWaiter.resolve(); });
@@ -174,16 +173,29 @@ function setMainEvents(){
   postGetRoomStatus(api_roomst, function(_data){ storeRoomVersion(_data['room_ver']); initWaiter.resolve(); });
 
   \$userInput.attr("placeholder", ":int a = 1;    (':' 無しなら chat に投稿)");
+  setUserInfoLB();
 }
 
 function setUserInfoLB(){
-  var canClickSignOutBtn = true,
+  var canClickSignOutBtn = false,
       isShowLB = false;
   \$userIco.on("click", function(){trigUserInfoLB()});
   \$("#signOutBtn").on("click", function(){
     if(!canClickSignOutBtn){ return; }
     canClickSignOutBtn = true;
     signOut();
+  });
+  canClickSignOutBtn = true;
+
+  var isShowCodeLineNum = true;
+  \$("#showLineNumBtn").on("click", function(){
+    if(isShowCodeLineNum){
+      \$codeViewField.find(".code_row > .number").hide();
+      isShowCodeLineNum = false;
+    } else {
+      \$codeViewField.find(".code_row > .number").show();
+      isShowCodeLineNum = true;
+    }
   });
 
   function trigUserInfoLB(){
