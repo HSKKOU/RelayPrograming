@@ -35,6 +35,10 @@ class CodeRestfulController extends AbstractApiController
 
   public function create($data)
   {
+    if (strlen($data['code']) > 100) {
+      return $this->makeFailedJson("This code is more than 100 characters");
+    }
+
     $codeModel = new CodeModel();
     $codeModel->exchangeArray($data);
     $nowStr = date("Y-m-d H:i:s");
@@ -49,7 +53,7 @@ class CodeRestfulController extends AbstractApiController
       return $this->makeSuccessJson($savedData);
     }
 
-    return $this->makeFailedJson(array());
+    return $this->makeFailedJson("Failed post code");
   }
   private function changeTurnUser($_room_id)
   {

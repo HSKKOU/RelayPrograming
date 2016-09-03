@@ -103,7 +103,7 @@ function postTexts(_api, _postData, _successCB){
   post({"url": _api, "type": "post", "query": _postData,
     "success": function(_data){
       log("success post "+_api, _data);
-      _successCB(_data['data']);
+      _successCB(_data);
     },
     "fail": function(_data){
       log("fail post "+_api, _data);

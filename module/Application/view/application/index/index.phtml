@@ -224,7 +224,14 @@ function addRecievedCode(_code){
   codeRowCreator.createCR(_code).appendTo(\$codeViewField);
   prettyPrint();
 }
-function succeedPostCode(_code){ resetUserInput(); }
+function succeedPostCode(_res){
+  log("_res", _res);
+  if(!_res['result']){
+    alert(_res['data']);
+    return;
+  }
+  resetUserInput();
+}
 /* end code */
 
 
@@ -235,7 +242,7 @@ function setRecievedChatTexts(_ctexts){
   \$chatViewField.animate({"scrollTop": \$(\$chatViewField)[0].scrollHeight}, 'fast');
 }
 function addRecievedChatText(_ctext){ createChatRow(_ctext, \$chatRowTmp.clone()).appendTo(\$chatViewField); }
-function succeedPostChatText(_ctext){ resetUserInput(); }
+function succeedPostChatText(_res){ resetUserInput(); }
 /* end chat */
 
 
