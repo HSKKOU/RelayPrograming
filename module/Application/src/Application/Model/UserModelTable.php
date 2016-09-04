@@ -124,4 +124,15 @@ class UserModelTable extends AModelTable
 
     return array('res' => true, 'now' => $now, 'rids' => $updateRoomIds);
   }
+
+  public function inactivateUsersByRid($_room_id)
+  {
+    $sql = $this->tableGateway->getSql();
+    $update = $sql->update();
+    $update->set(array('is_active' => '0'));
+    $update->where->equalTo('room_id', $_room_id)
+                  ->equalTo('is_active', '1');
+    $statement = $sql->prepareStatementForSqlObject($update);
+    $updateRes = $statement->execute();
+  }
 }

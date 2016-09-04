@@ -83,6 +83,11 @@ class AModelTable
     return $this->tableGateway->delete(array('id' => (int)$_id));
   }
 
+  public function deleteModelByRid($_room_id)
+  {
+    return $this->tableGateway->delete(array('room_id' => (int)$_room_id));
+  }
+
 
   public function getLastId()
   {

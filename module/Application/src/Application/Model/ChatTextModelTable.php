@@ -55,4 +55,9 @@ class ChatTextModelTable extends AModelTable
   {
     return $this->deleteModel($id);
   }
+
+  public function deleteChatTextByRid($_room_id)
+  {
+    return $this->deleteModelByRid($_room_id);
+  }
 }

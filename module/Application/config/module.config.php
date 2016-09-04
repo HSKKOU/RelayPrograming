@@ -89,6 +89,7 @@ return array(
       'Application\Controller\Api\Member'  => Controller\Api\MemberRestfulController::class,
       'Application\Controller\Api\Roomst'  => Controller\Api\RoomStatusRestfulController::class,
 
+      'Application\Controller\Api\Reset'   => Controller\Api\ResetRoomApiController::class,
       'Application\Controller\Api\Cron'    => Controller\Api\CronApiController::class,
     ),
   ),

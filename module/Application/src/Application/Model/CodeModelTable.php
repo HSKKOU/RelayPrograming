@@ -59,4 +59,9 @@ class CodeModelTable extends AModelTable
   {
     return $this->deleteModel($id);
   }
+
+  public function deleteCodeByRid($_room_id)
+  {
+    return $this->deleteModelByRid($_room_id);
+  }
 }
