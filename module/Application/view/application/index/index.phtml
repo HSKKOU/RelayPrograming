@@ -277,9 +277,8 @@ function updateMemberTurn(_turnUid){
 
 
 /* user input */
-var canPost = false;
-function getCanPost(){ return canPost; }
 function setUserInputEvent(){
+  var canPost = false;
   \$userInputForm.on("submit", function(_e){
     if(!canPost){ return false; }
     canPost = false;
@@ -295,7 +294,7 @@ function setUserInputEvent(){
         canPost = true;
       });
     } else {
-      if(inputText == ""){ return false; }
+      if(inputText == ""){ canPost = true; return false; }
       postData["text"] = encodeSpecialChara(inputText);
       postTexts(api_chat, postData, succeedPostChatText, function(_fRes){}, function(_cRes){
         log("canPost", canPost);
