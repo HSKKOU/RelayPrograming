@@ -48,7 +48,7 @@ var \$signUpDOM = \$("#sign_up"),
     \$userInputForm = \$("#user_input_form"),
     \$userInput = \$("#user_input_field > input"),
     \$userIco = \$("#user_ico"),
-    initWaiter, canPostCode = false,
+    initWaiter, canPostCode = false, canSign = false,
     codeRowCreator;
 /* end declare members */
 
@@ -85,15 +85,19 @@ function initApis(){
 
 
 /* login */
+function getCanSign(){ return canSign; }
 function setLoginEvent(){
   \$signUpForm.on("submit", function(_e){
     _e.preventDefault();
     signUp();
     return false;
   });
+  canSign = true;
 }
 
 function signUp(){
+  if(!canSign){ return false; }
+  canSign = false;
   var name = \$signUpForm.find('.input_name > input').val(),
       color = \$signUpForm.find('.input_color > input').val();
 
@@ -110,14 +114,18 @@ function succeedSignUp(_user){
   userId = +_user['id'];
   signIn();
 }
-function failedSignUp(_data){ alert("Failed to create or sign up."); log(_data); }
+function failedSignUp(_data){
+  alert("Failed to create or sign up.");
+  log(_data);
+  canSign = true;
+}
 
 function signIn(){
   var postData = { "type": "signIn", "user_id": userId, "room_id": roomId };
   post({"url": api_user, "type": "post", "query": postData,
     "success": function(_data){ succeedSignIn(_data['data']); },
     "fail": function(_data){ failedSignIn(_data['data']); },
-    "complete": function(_data){ /* nothing to do. */ }
+    "complete": function(_data){ canSign = true; }
   });
 }
 
