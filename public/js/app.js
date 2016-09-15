@@ -99,7 +99,7 @@ function getTextsInRoom(_api, _roomId, _successCB){
   });
 }
 
-function postTexts(_api, _postData, _successCB){
+function postTexts(_api, _postData, _successCB, _failCB, _completeCB){
   post({"url": _api, "type": "post", "query": _postData,
     "success": function(_data){
       log("success post "+_api, _data);
@@ -107,8 +107,12 @@ function postTexts(_api, _postData, _successCB){
     },
     "fail": function(_data){
       log("fail post "+_api, _data);
+      _failCB(_data);
     },
-    "complete": function(_data){ /* nothing to do. */ }
+    "complete": function(_data){
+      log("complete post "+_api, _data);
+      _completeCB(_data);
+    }
   });
 }
 /* end code and chat */

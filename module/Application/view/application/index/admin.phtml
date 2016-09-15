@@ -158,8 +158,11 @@ function updateMemberTurn(_turnUid){
 
 /* user input */
 function setUserInputEvent(){
+  var canPost = false;
   \$userInputForm.on("submit", function(_e){
     _e.preventDefault();
+    if(!canPost){ return false; }
+    canPost = false;
     var inputText = \$userInputForm.find('#user_input_field > input').val(),
         postData = { "room_id": roomId };
     if(!inputText.match(/^[0-9]+:/)){ log("illegal syntax modified code."); return false; }
@@ -176,11 +179,12 @@ function setUserInputEvent(){
     post({"url": api_code+editRowCid, "type": "put", "query": postData,
       "success": function(_data){ resetUserInput(); },
       "fail": function(_data){ log("f", _data);/* nothing to do. */ },
-      "complete": function(_data){ /* nothing to do. */ }
+      "complete": function(_data){ canPost = true; }
     });
 
     return false;
   });
+  canPost = true;
 }
 
 function resetUserInput(){ \$userInput.val(""); }
