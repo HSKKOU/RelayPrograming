@@ -277,8 +277,9 @@ function updateMemberTurn(_turnUid){
 
 
 /* user input */
+var canPost = false;
+function getCanPost(){ return canPost; }
 function setUserInputEvent(){
-  var canPost = false;
   \$userInputForm.on("submit", function(_e){
     if(!canPost){ return false; }
     canPost = false;
@@ -290,12 +291,14 @@ function setUserInputEvent(){
       if(!canPostCode){ alert("It is not your turn."); return; }
       postData["code"] = encodeSpecialChara(inputText.substr(1));
       postTexts(api_code, postData, succeedPostCode, function(_fRes){}, function(_cRes){
+        log("canPost", canPost);
         canPost = true;
       });
     } else {
       if(inputText == ""){ return false; }
       postData["text"] = encodeSpecialChara(inputText);
       postTexts(api_chat, postData, succeedPostChatText, function(_fRes){}, function(_cRes){
+        log("canPost", canPost);
         canPost = true;
       });
     }
