@@ -94,6 +94,29 @@ function setMainEvents(){
   postGetRoomStatus(api_roomst, function(_data){ storeRoomVersion(_data['room_ver']); initWaiter.resolve(); });
 
   \$userInput.attr("placeholder", "10:int a = 1;");
+  setUserInfoLB();
+}
+
+function setUserInfoLB(){
+  var isShowLB = false;
+  \$userIco.on("click", function(){trigUserInfoLB()});
+
+  var isShowCodeLineNum = true;
+  \$("#showLineNumBtn").on("click", function(){
+    if(isShowCodeLineNum){
+      \$codeViewField.find(".code_row > .number").hide();
+      isShowCodeLineNum = false;
+    } else {
+      \$codeViewField.find(".code_row > .number").show();
+      isShowCodeLineNum = true;
+    }
+  });
+
+  function trigUserInfoLB(){
+    var \$userInfoLb = \$("#user_info_lb");
+    if(isShowLB){ isShowLB = false; \$userInfoLb.hide(); }
+    else{ isShowLB = true; \$userInfoLb.show(); }
+  }
 }
 /* end main routine */
 
