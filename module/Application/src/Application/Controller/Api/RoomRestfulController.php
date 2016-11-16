@@ -57,11 +57,7 @@ class RoomRestfulController extends AbstractApiController
 
     $rowSet = $this->getRoomTable()->fetchAll();
     foreach ($rowSet as $row) {
-      $data[] = array(
-        'id' => $row->id,
-        'name' => $row->name,
-        'color' => $row->color,
-      );
+      $data[] = $row->exchangeToArray();
     }
 
     return $data;

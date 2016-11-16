@@ -5,12 +5,14 @@ class RoomModel extends AModel
 {
   public $modified;
   public $turn_user_id;
+  public $room_issue;
 
   public function exchangeArray($data)
   {
     $this->id = (isset($data['id']))? +$data['id']:0;
     $this->modified = (isset($data['modified']))? $data['modified']:"";
     $this->turn_user_id = (isset($data['turn_user_id']))? +$data['turn_user_id']:0;
+    $this->room_issue = (isset($data['room_issue']))? $data['room_issue']:"";
   }
 
   public function exchangeToArray()
@@ -19,6 +21,7 @@ class RoomModel extends AModel
       'id' => $this->id,
       'modified' => $this->modified,
       'turn_user_id' => $this->turn_user_id,
+      'room_issue' => $this->room_issue,
     );
   }
 }
