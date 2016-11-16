@@ -84,7 +84,7 @@ input:focus, .button:focus {outline: 0;border-color: orange;}
 
 /* code view */
 #code_view{/*background: #f4eeee;*/}
-  #code_view_field{padding: 8px;}
+  #code_view_field{padding: 5px 8px;}
     #code_view_field > .code_row{position: relative;padding: 0 0 0 25px;width: 100%;min-height: 22px;line-height: 22px;font-size: 18px;}
       #code_view_field > .code_row > .number{position: absolute;left: 0;width: 23px;text-align: rleft;font-size: 13px;}
 
