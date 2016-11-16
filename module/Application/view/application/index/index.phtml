@@ -8,7 +8,7 @@
   <div id="navbar" class="bb">
     <div id="room_issue" class="wh100">
       <div class="img">Q</div>
-      <div class="text">問題だ問題だ問題だ問題だ問題だ問題だ問題だ問題だ問題だ問題だ問題だ問題だ問題だ問題だ</div>
+      <div class="text"></div>
     </div>
     <div id="menu_btn"></div>
   </div>
@@ -183,10 +183,11 @@ function setMainEvents(){
     recievedChatTexts = setRecievedChatTexts;
     recievedMembers = setMemberStatus;
     startHeartBeat();
-  }, 4);
+  }, 5);
 
   setUserInputEvent();
 
+  getRoomInfo(api_room, roomId, function(_data){ \$("#room_issue > .text").text(_data["room_issue"]); log(_data); initWaiter.resolve(); });
   getTextsInRoom(api_code, roomId, function(_data){ setRecievedCodes(_data); initWaiter.resolve(); });
   getTextsInRoom(api_chat, roomId, function(_data){ setRecievedChatTexts(_data); initWaiter.resolve(); });
   getMemberStatus(function(_data){ setMemberStatus(_data); initWaiter.resolve(); });

@@ -170,6 +170,20 @@ function getRoomVersion(){
   return rVer;
 }
 function storeRoomVersion(_ver){ $.cookie(roomVerCN, _ver, { "path": "/", "expires": 1 }); }
+
+function getRoomInfo(_api, _rId, _successCB){
+  log(_api, _rId);
+  post({"url": _api+_rId, "type": "get", "query": {},
+    "success": function(_data){
+      log("success get room info", _data);
+      _successCB(_data['data']);
+    },
+    "fail": function(_data){
+      log("fail get "+getUrl, _data);
+    },
+    "complete": function(_data){ /* nothing to do. */ }
+  });
+}
 /* end room */
 
 
