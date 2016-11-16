@@ -30,6 +30,17 @@ return array(
           ),
         ),
       ),
+      'lobby' => array(
+        'type'    => 'Literal',
+        'options' => array(
+          'route'    => '/lobby',
+          'defaults' => array(
+            '__NAMESPACE__' => 'Application\Controller',
+            'controller' => 'Lobby',
+            'action' => 'index',
+          ),
+        ),
+      ),
       'api' => array(
         'type'    => 'Literal',
         'options' => array(
@@ -81,6 +92,7 @@ return array(
       'Application\Controller\Index' => Controller\IndexController::class,
       'Application\Controller\Watch' => Controller\WatchController::class,
       'Application\Controller\Admin' => Controller\AdminController::class,
+      'Application\Controller\Lobby' => Controller\LobbyController::class,
 
       'Application\Controller\Api\User'    => Controller\Api\UserRestfulController::class,
       'Application\Controller\Api\Code'    => Controller\Api\CodeRestfulController::class,
@@ -106,6 +118,7 @@ return array(
       'application/index/index' => __DIR__ . '/../view/application/index/index.phtml',
       'application/watch/index' => __DIR__ . '/../view/application/index/watch.phtml',
       'application/admin/index' => __DIR__ . '/../view/application/index/admin.phtml',
+      'application/lobby/index' => __DIR__ . '/../view/application/index/lobby.phtml',
 
       // error page
       'error/404'               => __DIR__ . '/../view/error/404.phtml',

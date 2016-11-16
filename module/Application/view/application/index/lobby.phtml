@@ -1,0 +1,83 @@
+<div id="lobby_back" class="">
+  <div id="lobby" class="bg-default">
+    <div id="lobby_title">Relay Programming</div>
+
+    <div id="lobby_rooms">
+      <table class="table table-bordered table-hover table-responsive">
+        <thead>
+          <tr> <th>Room No.</th><th>課題</th> </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="filterable-cell">1</td>
+            <td class="filterable-cell">問題あ</td>
+          </tr>
+          <tr>
+            <td class="filterable-cell">1</td>
+            <td class="filterable-cell">問題あ</td>
+          </tr>
+          <tr>
+            <td class="filterable-cell">1</td>
+            <td class="filterable-cell">問題あ</td>
+          </tr>
+          <tr>
+            <td class="filterable-cell">1</td>
+            <td class="filterable-cell">問題あ</td>
+          </tr>
+          <tr>
+            <td class="filterable-cell">1</td>
+            <td class="filterable-cell">問題あ</td>
+          </tr>
+          <tr>
+            <td class="filterable-cell">1</td>
+            <td class="filterable-cell">問題あ</td>
+          </tr>
+          <tr>
+            <td class="filterable-cell">1</td>
+            <td class="filterable-cell">問題あ</td>
+          </tr>
+          <tr>
+            <td class="filterable-cell">1</td>
+            <td class="filterable-cell">問題あ</td>
+          </tr>
+          <tr>
+            <td class="filterable-cell">1</td>
+            <td class="filterable-cell">問題あ</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div id="lobby_btns_space">
+      <div id="lobby_btns_space_wrapper">
+        <input id="createRoomBtn" class="btn btn-info" type="button" value="CREATE" />
+        <input id="enterRoomBtn" class="btn btn-success" type="button" value="ENTER" />
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<?php
+$api_user = $this->url('api/default', array('controller' => 'user'));
+$api_code = $this->url('api/default', array('controller' => 'code'));
+$api_chat = $this->url('api/default', array('controller' => 'chat'));
+$api_room = $this->url('api/default', array('controller' => 'room'));
+$api_member = $this->url('api/default', array('controller' => 'member'));
+$api_roomst = $this->url('api/default', array('controller' => 'roomst'));
+
+$this->inlineScript()->appendScript(
+<<<__END__
+
+/* declare members */
+/* end declare members */
+
+
+/* init */
+(function main(){
+  // TODO:
+})();
+
+__END__
+);
