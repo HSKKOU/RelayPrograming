@@ -187,7 +187,7 @@ function setMainEvents(){
 
   setUserInputEvent();
 
-  getRoomInfo(api_room, roomId, function(_data){ \$("#room_issue > .text").text(_data["room_issue"]); log(_data); initWaiter.resolve(); });
+  getRoomInfo(api_room, roomId, function(_data){ \$("#room_issue > .text").text(_data["room_issue"]); initWaiter.resolve(); });
   getTextsInRoom(api_code, roomId, function(_data){ setRecievedCodes(_data); initWaiter.resolve(); });
   getTextsInRoom(api_chat, roomId, function(_data){ setRecievedChatTexts(_data); initWaiter.resolve(); });
   getMemberStatus(function(_data){ setMemberStatus(_data); initWaiter.resolve(); });

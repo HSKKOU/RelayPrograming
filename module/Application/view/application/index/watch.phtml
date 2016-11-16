@@ -1,13 +1,26 @@
-<div id="app-body" class="wh100">
+<div id="room_info_side_bar">
+  <!-- area for rooms -->
+  <div id="rooms_view">test</div>
+  <!-- area for members -->
+  <?= $this->members_view ?>
+</div>
+<div id="app-body">
+  <div id="navbar" class="bb">
+    <div id="room_issue" class="wh100">
+      <div class="img">Q</div>
+      <div class="text"></div>
+    </div>
+    <div id="menu_btn"></div>
+  </div>
+
   <div id="code_chat_view" class="wh100">
     <!-- area for coded text -->
     <?= $this->code_view ?>
 
+    <div class="separator"></div>
+
     <!-- area for chat text -->
     <?= $this->chat_view ?>
-
-    <!-- area for members -->
-    <?= $this->members_view ?>
   </div>
 </div>
 
@@ -79,8 +92,9 @@ function setMainEvents(){
     recievedChatTexts = setRecievedChatTexts;
     recievedMembers = setMemberStatus;
     startHeartBeat();
-  }, 4);
+  }, 5);
 
+  getRoomInfo(api_room, roomId, function(_data){ \$("#room_issue > .text").text(_data["room_issue"]); initWaiter.resolve(); });
   getTextsInRoom(api_code, roomId, function(_data){ setRecievedCodes(_data); initWaiter.resolve(); });
   getTextsInRoom(api_chat, roomId, function(_data){ setRecievedChatTexts(_data); initWaiter.resolve(); });
   getMemberStatus(function(_data){ setMemberStatus(_data); initWaiter.resolve(); });
