@@ -27,7 +27,6 @@ code{display: block;padding: 0;overflow: hidden;width: 100%;word-wrap: break-wor
 
 /* layout.phtml */
 html {}
-body {background: #cef5ff;}
 div.container {position: relative;padding: 20px;}
 #app-body{position: relative;}
   #app-body.exist_ui{padding: 0 0 70px;}
