@@ -10,7 +10,7 @@ class RoomModel extends AModel
   public function exchangeArray($data)
   {
     $this->id = (isset($data['id']))? +$data['id']:0;
-    $this->modified = (isset($data['modified']))? $data['modified']:"";
+    $this->modified = (isset($data['modified']))? $data['modified']:NULL;
     $this->turn_user_id = (isset($data['turn_user_id']))? +$data['turn_user_id']:0;
     $this->room_issue = (isset($data['room_issue']))? $data['room_issue']:"";
   }

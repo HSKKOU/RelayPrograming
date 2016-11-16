@@ -7,87 +7,119 @@
         <thead>
           <tr> <th class="rnum">No.</th><th class="issue">課題</th> </tr>
         </thead>
-        <tbody>
-          <tr>
-            <td class="rnum">1</td>
-            <td class="issue">問題あ</td>
-          </tr>
-          <tr>
-            <td class="rnum">1</td>
-            <td class="issue">問題あ</td>
-          </tr>
-          <tr>
-            <td class="rnum">1</td>
-            <td class="issue">問題あ</td>
-          </tr>
-          <tr>
-            <td class="rnum">1</td>
-            <td class="issue">問題あ</td>
-          </tr>
-          <tr>
-            <td class="rnum">1</td>
-            <td class="issue">問題あ</td>
-          </tr>
-          <tr>
-            <td class="rnum">1</td>
-            <td class="issue">問題あ</td>
-          </tr>
-          <tr>
-            <td class="rnum">1</td>
-            <td class="issue">問題あ</td>
-          </tr>
-          <tr>
-            <td class="rnum">1</td>
-            <td class="issue">問題あ</td>
-          </tr>
-          <tr>
-            <td class="rnum">1</td>
-            <td class="issue">問題あ</td>
-          </tr>
-          <tr>
-            <td class="rnum">1</td>
-            <td class="issue">問題あ</td>
-          </tr>
-          <tr>
-            <td class="rnum">1</td>
-            <td class="issue">問題あ</td>
-          </tr>
-          <tr>
-            <td class="rnum">1</td>
-            <td class="issue">問題あ</td>
+        <tbody id="lobby_table_body">
+          <tr class="room-info-row template">
+            <td class="rnum"></td>
+            <td class="issue"></td>
           </tr>
         </tbody>
       </table>
     </div>
 
-    <div id="lobby_create_room_area">
+    <form id="lobby_create_room_area">
       <input id="newIssueText" placeholder="新しい部屋の課題" />
-      <input id="createRoomBtn" class="btn btn-info" type="button" value="CREATE" />
-    </div>
+      <input id="createRoomBtn" class="btn btn-info" type="submit" value="CREATE" />
+    </form>
   </div>
 </div>
 
 
 
 <?php
-$api_user = $this->url('api/default', array('controller' => 'user'));
-$api_code = $this->url('api/default', array('controller' => 'code'));
-$api_chat = $this->url('api/default', array('controller' => 'chat'));
 $api_room = $this->url('api/default', array('controller' => 'room'));
-$api_member = $this->url('api/default', array('controller' => 'member'));
-$api_roomst = $this->url('api/default', array('controller' => 'roomst'));
 
 $this->inlineScript()->appendScript(
 <<<__END__
 
 /* declare members */
+var \$lobbyTable = \$("#lobby_table"),
+    \$lobbyTableBody = \$("#lobby_table_body"),
+    \$roomInfoRowTmp = \$lobbyTableBody.find(".room-info-row").remove().removeClass("template"),
+    \$createRoomForm = \$("#lobby_create_room_area"),
+    \$roomIssueText = \$("#newIssueText");
 /* end declare members */
 
 
 /* init */
 (function main(){
-  // TODO:
+  getRooms();
+  readyEventCreationRoom();
 })();
+
+
+
+
+/* get rooms */
+function getRooms(){
+  post({"url": "$api_room", "type": "get", "query": {},
+    "success": function(_data){ succeedGetRooms(_data['data']); },
+    "fail": function(_data){ failedGetRooms(_data['data']); },
+    "complete": function(_data){ /* nothing to do. */ }
+  });
+}
+function succeedGetRooms(_data){ displayRooms(_data); }
+function failedGetRooms(_data){ alert("Failed Rooms Information"); }
+/* end get rooms */
+
+
+/* initialize rooms table */
+function displayRooms(_roomInfos){
+  for(var rk in _roomInfos){
+    (function(){
+      var rInfo = _roomInfos[rk];
+      var \$roomInfoRow = \$roomInfoRowTmp.clone();
+
+      \$roomInfoRow
+      .find(".rnum").text(rInfo["id"])
+      .next(".issue").text(rInfo["room_issue"])
+
+      // transition to relay programming page, clicked table row
+      .on("click", function(){ location.href = "/" + rInfo["id"]; });
+
+      \$lobbyTableBody.append(\$roomInfoRow);
+    })();
+
+  }
+}
+/* end initialize rooms table */
+
+
+
+
+
+
+/* creation room */
+function readyEventCreationRoom(){
+  var isPostedCreationRoom = false;
+  \$createRoomForm.on("submit", function(_e){
+    _e.preventDefault();
+    if (isPostedCreationRoom) { return false; }
+
+    if(createRoom()){ isPostedCreationRoom = true; }
+
+    return false;
+  });
+}
+function createRoom(){
+  var issue = \$roomIssueText.val();
+  if (issue == void 0 || issue == null || issue == "") {
+    alert("課題の内容を入力してください");
+    return false;
+  }
+
+  post({"url": "$api_room", "type": "post", "query": {"room_issue": issue},
+    "success": function(_data){ log(_data);succeedCreateRoom(_data['data']); },
+    "fail": function(_data){ log(_data);failedCreateRoom(_data['data']); },
+    "complete": function(_data){ /* nothing to do. */ }
+  });
+
+  return true;
+}
+function succeedCreateRoom(_data){ enterCreatedRoom(_data["id"]); }
+function failedCreateRoom(_data){ alert("[Server]部屋の作成に失敗"); }
+
+function enterCreatedRoom(_id) { location.href = "/" + _id; }
+/* end creation room */
 
 __END__
 );

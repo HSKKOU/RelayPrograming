@@ -36,7 +36,7 @@ class RoomRestfulController extends AbstractApiController
     $roomModel = new RoomModel();
     $roomModel->exchangeArray($data);
 
-    $result = $this->getRoomTable()->saveCode($roomModel);
+    $result = $this->getRoomTable()->saveRoom($roomModel);
     if ($result == 1) {
       $savedData = $this->getRoomTable()->getLastRoom();
       return $this->makeSuccessJson($savedData);
