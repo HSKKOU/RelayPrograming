@@ -1,4 +1,8 @@
-<div id="app-body" class="wh100 exist_ui">
+<div id="room_info_side_bar" class="col-lg-2 col-md-2 col-sm-2">
+  <!-- area for members -->
+  <?= $this->members_view ?>
+</div>
+<div id="app-body" class="exist_ui col-lg-10 col-md-10 col-sm-10">
 
   <div id="code_chat_view" class="wh100">
     <!-- area for coded text -->
@@ -6,9 +10,6 @@
 
     <!-- area for chat text -->
     <?= $this->chat_view ?>
-
-    <!-- area for members -->
-    <?= $this->members_view ?>
   </div>
 
   <!-- area for user input -->
