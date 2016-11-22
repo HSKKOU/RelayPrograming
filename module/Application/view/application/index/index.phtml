@@ -166,7 +166,7 @@ function signOut(){
   });
 }
 
-function succeedSignOut(_user){ resetCookiesInRoom(roomId); location.reload(); }
+function succeedSignOut(_user){ resetCookiesInRoom(roomId); location.href = "/lobby"; }
 function failedSignOut(_data){ alert("Failed Sign Out."); log(_data); }
 /* end login */
 
