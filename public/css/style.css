@@ -73,8 +73,9 @@ input:focus, .button:focus {outline: 0;border-color: orange;}
     #lobby_table .issue {width: 432px;}
 
 #lobby_create_room_area{position: absolute;bottom: 0;padding: 25px 60px;width: 100%;height: 100px;}
-  #newIssueText{margin-right: 20px;padding: 10px;width: 306px;}
-  #createRoomBtn{width: 150px;height: 50px;}
+  #newIssueText{margin-right: 10px;padding: 10px;width: 303px;}
+  #lang{width: 50px;margin-right: 10px;}
+  #createRoomBtn{width: 100px;height: 50px;}
 /* end lobby */
 
 

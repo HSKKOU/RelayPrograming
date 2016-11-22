@@ -2,9 +2,21 @@
 var api_user, api_code, api_chat, api_room, api_member, api_roomst,
     userId = -1,
     roomId = -1,
+    roomLang = "c",
     userIdCN = "",
     userName = "",
-    userColor = "#ffffff";
+    userColor = "#ffffff",
+    langList = {
+      "c"   : "C",
+      "cpp" : "C++",
+      "cs"  : "C#",
+      "java": "Java",
+      "js"  : "JavaScript",
+      "perl": "Perl",
+      "py"  : "Python",
+      "rb"  : "Ruby"
+    };
+
 
 /* simplified log for debug */
 function log(_){ if(true){ console.log.apply(console, arguments); } }
@@ -56,7 +68,8 @@ function decodeSpecialChara(_str){
 
 /* syntax highlight */
 function createPrettyCodeHtml(_codeStr){
-  return $("<code class='prettyprint'>" + _codeStr + "</code>");
+  log(roomLang);
+  return $("<code class='prettyprint lang-" + roomLang + "'>" + _codeStr + "</code>");
 }
 
 
@@ -176,6 +189,7 @@ function getRoomInfo(_api, _rId, _successCB){
   post({"url": _api+_rId, "type": "get", "query": {},
     "success": function(_data){
       log("success get room info", _data);
+      setRoomInfoCommon(_data['data']);
       _successCB(_data['data']);
     },
     "fail": function(_data){
@@ -183,6 +197,11 @@ function getRoomInfo(_api, _rId, _successCB){
     },
     "complete": function(_data){ /* nothing to do. */ }
   });
+}
+
+function setRoomInfoCommon(_data) {
+  roomLang = _data['room_lang'];
+  $("#room_issue > .text").text("[" + langList[roomLang] + "] " + _data["room_issue"]);
 }
 /* end room */
 

@@ -96,15 +96,16 @@ function setMainEvents(){
     recievedChatTexts = setRecievedChatTexts;
     recievedMembers = setMemberStatus;
     startHeartBeat();
-  }, 5);
+  }, 4);
 
   setUserInputEvent();
 
-  getRoomInfo(api_room, roomId, function(_data){ \$("#room_issue > .text").text(_data["room_issue"]); initWaiter.resolve(); });
-  getTextsInRoom(api_code, roomId, function(_data){ setRecievedCodes(_data); initWaiter.resolve(); });
-  getTextsInRoom(api_chat, roomId, function(_data){ setRecievedChatTexts(_data); initWaiter.resolve(); });
-  getMemberStatus(function(_data){ setMemberStatus(_data); initWaiter.resolve(); });
-  postGetRoomStatus(api_roomst, function(_data){ storeRoomVersion(_data['room_ver']); initWaiter.resolve(); });
+  getRoomInfo(api_room, roomId, function(_data){
+    getTextsInRoom(api_code, roomId, function(_data){ setRecievedCodes(_data); initWaiter.resolve(); });
+    getTextsInRoom(api_chat, roomId, function(_data){ setRecievedChatTexts(_data); initWaiter.resolve(); });
+    getMemberStatus(function(_data){ setMemberStatus(_data); initWaiter.resolve(); });
+    postGetRoomStatus(api_roomst, function(_data){ storeRoomVersion(_data['room_ver']); initWaiter.resolve(); });
+  });
 
   \$userInput.attr("placeholder", "10:int a = 1;");
   setUserInfoLB();

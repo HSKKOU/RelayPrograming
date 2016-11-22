@@ -18,6 +18,16 @@
 
     <form id="lobby_create_room_area">
       <input id="newIssueText" placeholder="新しい部屋の課題" />
+      <select id="lang">
+        <option value="c" selected="selected">C</option>
+        <option value="cpp">C++</option>
+        <option value="cs">C#</option>
+        <option value="java">Java</option>
+        <option value="js">JavaScript</option>
+        <option value="perl">Perl</option>
+        <option value="py">Python</option>
+        <option value="rb">Ruby</option>
+      </select>
       <input id="createRoomBtn" class="btn btn-info" type="submit" value="CREATE" />
     </form>
   </div>
@@ -36,7 +46,8 @@ var \$lobbyTable = \$("#lobby_table"),
     \$lobbyTableBody = \$("#lobby_table_body"),
     \$roomInfoRowTmp = \$lobbyTableBody.find(".room-info-row").remove().removeClass("template"),
     \$createRoomForm = \$("#lobby_create_room_area"),
-    \$roomIssueText = \$("#newIssueText");
+    \$roomIssueText = \$("#newIssueText")
+    \$roomLangSelect = \$("#lang");
 /* end declare members */
 
 
@@ -107,7 +118,13 @@ function createRoom(){
     return false;
   }
 
-  post({"url": "$api_room", "type": "post", "query": {"room_issue": issue},
+  var lang = \$roomLangSelect.val();
+  if (lang == void 0 || issue == null || issue == "") {
+    alert("言語の種類を正しく入力してください");
+    return false;
+  }
+
+  post({"url": "$api_room", "type": "post", "query": {"room_issue": issue, "room_lang": lang},
     "success": function(_data){ log(_data);succeedCreateRoom(_data['data']); },
     "fail": function(_data){ log(_data);failedCreateRoom(_data['data']); },
     "complete": function(_data){ /* nothing to do. */ }
