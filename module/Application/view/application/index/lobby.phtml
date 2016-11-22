@@ -5,11 +5,12 @@
     <div id="lobby_rooms">
       <table id="lobby_table" class="table table-bordered table-hover">
         <thead>
-          <tr> <th class="rnum">No.</th><th class="issue">課題</th> </tr>
+          <tr> <th class="rnum">No.</th><th class="lang">言語</th><th class="issue">課題</th> </tr>
         </thead>
         <tbody id="lobby_table_body">
           <tr class="room-info-row template">
             <td class="rnum"></td>
+            <td class="lang"></td>
             <td class="issue"></td>
           </tr>
         </tbody>
@@ -82,6 +83,7 @@ function displayRooms(_roomInfos){
 
       \$roomInfoRow
       .find(".rnum").text(rInfo["id"])
+      .next(".lang").text(langList[rInfo["room_lang"]])
       .next(".issue").text(rInfo["room_issue"])
 
       // transition to relay programming page, clicked table row
