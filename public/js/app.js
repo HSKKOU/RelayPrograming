@@ -74,6 +74,17 @@ function createPrettyCodeHtml(_codeStr){
 
 
 
+/* text color setting */
+function calcMonoColor(_color) {
+  if (_color.match(/^#[0-9A-Fa-f]{0,6}$/) == null) { return "#ffffff"; }
+  var r = parseInt(_color.substr(1,2), 16),
+      g = parseInt(_color.substr(3,2), 16),
+      b = parseInt(_color.substr(5,2), 16);
+  if (r*0.3 + g*0.6 + b*0.1 > 127.0) { return "#333333"; }
+  else { return "#ffffff"; }
+}
+
+
 /* Cookie */
 function createRoomCookieName(_room_id, _column){
   return "RPRoom" + roomId + _column;
@@ -91,7 +102,7 @@ function resetCookiesInRoom(_room_id){
 /* code and chat */
 function createChatRow(_ctext, $_tmp){
   $_tmp
-  .find(".user_ico").css({"background": _ctext['user_color']}).text(decodeSpecialChara(_ctext['user_name']))
+  .find(".user_ico").css({"background": _ctext['user_color'], "color": calcMonoColor(_ctext['user_color'])}).text(decodeSpecialChara(_ctext['user_name']))
   .next(".text").text(decodeSpecialChara(_ctext['text']));
   return $_tmp;
 }
@@ -165,7 +176,7 @@ function createCodeRowCreator($_tmp){
 /* member */
 function createMember(_member, _tui, $_memberRowTmp){
   var $memberRow = $_memberRowTmp.clone();
-  $memberRow.css({"background": _member['color']}).text(_member['name'])
+  $memberRow.css({"background": _member['color'], "color": calcMonoColor(_member['color'])}).text(_member['name'])
   .addClass("uid"+_member['id']).attr("data-uid", _member['id']);
   if(_member['id'] == _tui){ $memberRow.addClass("turn"); }
   return $memberRow;

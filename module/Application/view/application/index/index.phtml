@@ -333,7 +333,7 @@ function validatePostCode(){ canPostCode = true; }
 function invalidatePostCode(){ canPostCode = false; }
 
 function resetUserInput(){ \$userInput.val(""); }
-function setUserInfo2UI(){ \$userIco.css({"background": userColor}).text(userName); }
+function setUserInfo2UI(){ \$userIco.css({"background": userColor, "color": calcMonoColor(userColor)}).text(userName); }
 /* end user input */
 
 __END__
