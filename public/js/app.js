@@ -7,21 +7,21 @@ var api_user, api_code, api_chat, api_room, api_member, api_roomst,
     userName = "",
     userColor = "#ffffff",
     langList = {
-      "c"   : "C",
-      "cpp" : "C++",
-      "cs"  : "C#",
-      "java": "Java",
-      "js"  : "JavaScript",
-      "perl": "Perl",
-      "py"  : "Python",
-      "rb"  : "Ruby"
+      "c"       : "C",
+      "cpp"     : "C++",
+      "csharp"  : "C#",
+      "java"    : "Java",
+      "js"      : "JavaScript",
+      "perl"    : "Perl",
+      "py"      : "Python",
+      "rb"      : "Ruby"
     };
 
 
 /* simplified log for debug */
 function log(_){ if(
-  // true
-  false
+  true
+  // false
 ){ console.log.apply(console, arguments); } }
 
 /* ajax post method
@@ -72,7 +72,7 @@ function decodeSpecialChara(_str){
 /* syntax highlight */
 function createPrettyCodeHtml(_codeStr){
   log(roomLang);
-  return $("<code class='prettyprint lang-" + roomLang + "'>" + _codeStr + "</code>");
+  return $("<pre class='brush:" + roomLang + " gutter:false'>" + _codeStr + "</pre>");
 }
 
 
@@ -148,28 +148,17 @@ function postTexts(_api, _postData, _successCB, _failCB, _completeCB){
 
 
 /* Code Row Creator */
-function createCodeRowCreator($_tmp){
-  var $codeRowTmp = $_tmp,
-      $nextCodeRow = $_tmp.clone();
+function createCodeRowCreator($_viewField, $_view, _lang){
+  var $viewFieldTmp = $_viewField.clone().attr("class", "brush:"+_lang).remove(),
+      $parentView = $_view,
+      codesRowList = [];
 
-  this['createCR'] = function(_code){
-    var $codeRow = createCodeRow(_code, $codeRowTmp.clone());
-    $codeRow.addClass("code-line-num-" + _code['line_num']);
-    $codeRow.find(".number").text(_code['line_num']);
-    return $codeRow;
+  this['updateCR'] = function(_code){
+    codesRowList.push(decodeSpecialChara(_code["code"]));
+    var $viewField = $viewFieldTmp.clone();
+    $parentView.find("#code_view_field").remove();
+    $viewField.text(codesRowList.join("\n")).appendTo($parentView);
   };
-
-  this['createNextRow'] = function(){
-    $nextCodeRow.find(".code").append(createPrettyCodeHtml(""));
-  }
-
-  this['updateNextRow'] = function(_code){
-  }
-
-  function createCodeRow(_code, $_tmp){
-    $_tmp.find(".code").append(createPrettyCodeHtml(_code['code']));
-    return $_tmp;
-  }
 }
 /* end Code Row Creator */
 

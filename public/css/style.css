@@ -90,7 +90,7 @@ input:focus, .button:focus {outline: 0;border-color: orange;}
 /* layout elements */
 #navbar{position: absolute;top: 0;border-bottom: 1px solid #ddd;padding: 10px 50px 10px 10px;width: 100%;height: 60px;box-shadow: 0 1px 1px 1px #eee;}
 #room_info_side_bar{position: absolute;top: 0;left: 0;width: 120px;height: 100%;z-index: 100;}
-#app-body{position: relative;padding: 70px 0 10px;width: 100%;height: 100%;}
+#app-body{position: relative;padding: 60px 0 10px;width: 100%;height: 100%;}
   #app-body.exist_ui{padding: 70px 0 80px;}
 
 #chat_view, #members_view{position: absolute;top: 0;height: 100%;}
@@ -117,11 +117,11 @@ input:focus, .button:focus {outline: 0;border-color: orange;}
 
 /* code chat view */
 #code_chat_view{position: relative;padding: 0 300px 0 0;clear: both;float: left;}
-  #code_chat_view > .separator{position: absolute;top: 0;right: 300px;width: 2px;height: 100%;background: #98978b;}
+  #code_chat_view > .separator{position: absolute;top: 0;bottom: 0;right: 300px;margin: auto;width: 2px;height: 98%;background: #98978b;}
 
 /* code view */
 #code_view{/*background: #f4eeee;*/}
-  #code_view_field{padding: 5px 8px;}
+  #code_view_field{padding: 0 8px;}
     #code_view_field > .code_row{position: relative;padding: 0 0 0 25px;width: 100%;min-height: 22px;line-height: 22px;font-size: 18px;}
       #code_view_field > .code_row > .number{position: absolute;left: 0;width: 23px;text-align: rleft;font-size: 13px;}
 
