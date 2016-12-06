@@ -44,7 +44,6 @@ $this->inlineScript()->appendScript(
 var \$signUpDOM = \$("#sign_up"),
     \$signUpForm = \$("#sign_up_form"),
     \$codeViewDOM = \$("#code_view"),
-    \$codeRowTmp = \$codeViewDOM.find(".code_row").remove().removeClass("template"),
     \$codeViewField = \$("#code_view_field"),
     \$chatViewDOM = \$("#chat_view"),
     \$chatRowTmp = \$chatViewDOM.find(".chat_row").remove().removeClass("template"),
@@ -85,8 +84,6 @@ function initApis(){
 
 /* main routine */
 function setMainEvents(){
-  codeRowCreator = new createCodeRowCreator(\$codeRowTmp);
-
   initWaiter = new Waiter(function(){
     recievedCodes = setRecievedCodes;
     recievedChatTexts = setRecievedChatTexts;
@@ -95,6 +92,7 @@ function setMainEvents(){
   }, 4);
 
   getRoomInfo(api_room, roomId, function(_data){
+    codeRowCreator = new createCodeRowCreator(\$codeViewField, \$codeViewDOM, roomLang);
     getTextsInRoom(api_code, roomId, function(_data){ setRecievedCodes(_data); initWaiter.resolve(); });
     getTextsInRoom(api_chat, roomId, function(_data){ setRecievedChatTexts(_data); initWaiter.resolve(); });
     getMemberStatus(function(_data){ setMemberStatus(_data); initWaiter.resolve(); });
@@ -106,20 +104,13 @@ function setMainEvents(){
 
 /* code */
 function setRecievedCodes(_codes){
+  log("setRecievedCodes", _codes);
   if(_codes.length == 0){ return; }
   for(var i in _codes){
-    if(\$codeViewField.find(".code-line-num-"+_codes[i]['line_num'])[0]){ updateCode(_codes[i]); }
-    else{ addRecievedCode(_codes[i]); }
+    codeRowCreator.updateCR(_codes[i]);
   }
-  \$codeViewField.animate({"scrollTop": \$(\$codeViewField)[0].scrollHeight}, 'fast');
-}
-function updateCode(_code){
-  \$codeViewField.find(".code-line-num-"+_code['line_num']).find(".code").html(createPrettyCodeHtml(_code['code']));
-  prettyPrint();
-}
-function addRecievedCode(_code){
-  codeRowCreator.createCR(_code).appendTo(\$codeViewField);
-  prettyPrint();
+  SyntaxHighlighter.highlight();
+  \$codeViewDOM.animate({"scrollTop": \$(\$codeViewDOM)[0].scrollHeight}, 'fast');
 }
 function succeedPostCode(_code){ resetUserInput(); }
 /* end code */
