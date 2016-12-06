@@ -47,7 +47,6 @@ $this->inlineScript()->appendScript(
 var \$signUpDOM = \$("#sign_up"),
     \$signUpForm = \$("#sign_up_form"),
     \$codeViewDOM = \$("#code_view"),
-    \$codeRowTmp = \$codeViewDOM.find(".code_row").remove().removeClass("template"),
     \$codeViewField = \$("#code_view_field"),
     \$chatViewDOM = \$("#chat_view"),
     \$chatRowTmp = \$chatViewDOM.find(".chat_row").remove().removeClass("template"),
@@ -89,8 +88,6 @@ function setMainEvents(){
   resetUserInput();
   setUserInfo2UI();
 
-  codeRowCreator = new createCodeRowCreator(\$codeRowTmp);
-
   initWaiter = new Waiter(function(){
     recievedCodes = setRecievedCodes;
     recievedChatTexts = setRecievedChatTexts;
@@ -101,6 +98,7 @@ function setMainEvents(){
   setUserInputEvent();
 
   getRoomInfo(api_room, roomId, function(_data){
+    codeRowCreator = new createCodeRowCreator(\$codeViewField, \$codeViewDOM, roomLang);
     getTextsInRoom(api_code, roomId, function(_data){ setRecievedCodes(_data); initWaiter.resolve(); });
     getTextsInRoom(api_chat, roomId, function(_data){ setRecievedChatTexts(_data); initWaiter.resolve(); });
     getMemberStatus(function(_data){ setMemberStatus(_data); initWaiter.resolve(); });
@@ -137,20 +135,12 @@ function setUserInfoLB(){
 
 /* code */
 function setRecievedCodes(_codes){
+  log("setRecievedCodes", _codes);
   if(_codes.length == 0){ return; }
   for(var i in _codes){
-    if(\$codeViewField.find(".code-line-num-"+_codes[i]['line_num'])[0]){ updateCode(_codes[i]); }
-    else{ addRecievedCode(_codes[i]); }
+    codeRowCreator.updateCR(_codes[i]);
   }
-  \$codeViewField.animate({"scrollTop": \$(\$codeViewField)[0].scrollHeight}, 'fast');
-}
-function updateCode(_code){
-  \$codeViewField.find(".code-line-num-"+_code['line_num']).find(".code").html(createPrettyCodeHtml(_code['code']));
-  prettyPrint();
-}
-function addRecievedCode(_code){
-  codeRowCreator.createCR(_code).attr("data-cid", _code['id']).appendTo(\$codeViewField);
-  prettyPrint();
+  SyntaxHighlighter.highlight();
 }
 function succeedPostCode(_code){ resetUserInput(); }
 /* end code */
@@ -210,10 +200,10 @@ function setUserInputEvent(){
     ipTexts.shift();
     code = ipTexts.join(":");
 
-    var editRowCid = \$codeViewField.find(".code-line-num-"+lineNum).data("cid");
     postData["code"] = encodeSpecialChara(code);
+    postData["line_num"] = lineNum;
 
-    post({"url": api_code+editRowCid, "type": "put", "query": postData,
+    post({"url": api_code+"0", "type": "put", "query": postData,
       "success": function(_data){ resetUserInput(); },
       "fail": function(_data){ log("f", _data);/* nothing to do. */ },
       "complete": function(_data){ canPost = true; }

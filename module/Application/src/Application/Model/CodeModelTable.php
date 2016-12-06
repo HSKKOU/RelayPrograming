@@ -40,6 +40,16 @@ class CodeModelTable extends AModelTable
     return $this->getUpdatedModelList($_ver, 'updated_at', $_room_id, 'room_id');
   }
 
+  public function getCodeByRoomIdAndLineNum($_room_id, $_line_num)
+  {
+    $room_id = (int)$_room_id;
+    $line_num = (int)$_line_num;
+    $rowSet = $this->tableGateway->select(array('room_id' => $room_id, 'line_num' => $line_num));
+    $row = $rowSet->current();
+    if(!$row) { return array(); }
+    return $row;
+  }
+
   public function saveCode(CodeModel $codeModel)
   {
     $existCodes = $this->getCodeListByRoomId($codeModel->room_id);

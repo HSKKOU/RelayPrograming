@@ -156,7 +156,13 @@ function createCodeRowCreator($_viewField, $_view, _lang){
       codesRowList = [];
 
   this['updateCR'] = function(_code){
-    codesRowList.push(decodeSpecialChara(_code["code"]));
+    var lineNum = parseInt(_code["line_num"]);
+    if(lineNum == void 0 || lineNum == null || lineNum == ""){ return; }
+
+    if(lineNum >= 1 && lineNum <= codesRowList.length){ codesRowList[lineNum-1] = decodeSpecialChara(_code["code"]); }
+    else if (lineNum == codesRowList.length+1) { codesRowList.push(decodeSpecialChara(_code["code"])); }
+    else { alert("挿入Errorが発生したので再読み込みをします。"); location.reload(); }
+
     var $viewField = $viewFieldTmp.clone();
     $parentView.find("#code_view_field").remove();
     $viewField.text(codesRowList.join("\n")).appendTo($parentView);

@@ -69,7 +69,7 @@ class CodeRestfulController extends AbstractApiController
   {
     $nowStr = date("Y-m-d H:i:s");
     try{
-      $existCode = $this->getCodeTable()->getCode($id);
+      $existCode = $this->getCodeTable()->getCodeByRoomIdAndLineNum($data['room_id'], $data['line_num']);
       $existCode->code = $data['code'];
       $existCode->updated_at = $nowStr;
       $this->getCodeTable()->saveModel($existCode);
