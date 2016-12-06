@@ -21,8 +21,8 @@ var api_user, api_code, api_chat, api_room, api_member, api_roomst,
 
 /* simplified log for debug */
 function log(_){ if(
-  true
-  // false
+  // true
+  false
 ){ console.log.apply(console, arguments); } }
 
 /* ajax post method
