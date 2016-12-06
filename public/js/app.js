@@ -12,6 +12,7 @@ var api_user, api_code, api_chat, api_room, api_member, api_roomst,
       "csharp"  : "C#",
       "java"    : "Java",
       "js"      : "JavaScript",
+      "php"     : "PHP",
       "perl"    : "Perl",
       "py"      : "Python",
       "rb"      : "Ruby"
@@ -149,6 +150,7 @@ function postTexts(_api, _postData, _successCB, _failCB, _completeCB){
 
 /* Code Row Creator */
 function createCodeRowCreator($_viewField, $_view, _lang){
+  if(_lang == "php"){ _lang = "php html-script: true"; }
   var $viewFieldTmp = $_viewField.clone().attr("class", "brush:"+_lang).remove(),
       $parentView = $_view,
       codesRowList = [];
