@@ -165,7 +165,7 @@ function createCodeRowCreator($_viewField, $_view, _lang){
 
     var $viewField = $viewFieldTmp.clone();
     $parentView.find("#code_view_field").remove();
-    $viewField.text(codesRowList.join("\n")).appendTo($parentView);
+    $viewField.text(codesRowList.join("\n") + "\n").appendTo($parentView);
   };
 }
 /* end Code Row Creator */
