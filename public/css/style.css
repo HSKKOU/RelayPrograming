@@ -21,8 +21,8 @@
   background-color: #57a900;
 }
 
-/* bootstrap.css, pretty.css */
-code{display: block;padding: 0;overflow: hidden;width: 100%;word-wrap: break-word;white-space: normal;background: transparent;}
+/* invalidate code css of bootstrap.css */
+pre,code{border: none;padding: 0;overflow: hidden;width: 100%;word-wrap: break-word;white-space: normal;background: transparent;}
 
 
 /* layout.phtml */
