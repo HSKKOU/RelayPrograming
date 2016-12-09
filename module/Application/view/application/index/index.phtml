@@ -108,11 +108,12 @@ function setLoginEvent(){
 
 function signUp(){
   if(!canSign){ return false; }
-  canSign = false;
   var name = \$signUpForm.find('.input_name > input').val(),
       color = \$signUpForm.find('.input_color > input').val();
 
  if(name == void 0 || name == null || name == ""){ alert("nameを入力してください"); return false; }
+
+ canSign = false;
 
   var postData = { "type": "signUp", "name": name, "color": color, "room_id": roomId };
   post({"url": api_user, "type": "post", "query": postData,
